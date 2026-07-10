@@ -1,0 +1,55 @@
+/* Global stylesheet - Tailwind layers + a few base overrides.
+   Keep component-specific styling in the components themselves (Tailwind
+   utility classes); only put truly global rules here. */
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-surface text-brand-navy font-sans antialiased;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    @apply font-display text-brand-navy;
+  }
+
+  /* Consistent focus ring across the app for accessibility, instead of the
+     browser default (which looks inconsistent between inputs/buttons/links). */
+  a:focus-visible,
+  button:focus-visible,
+  input:focus-visible,
+  select:focus-visible,
+  textarea:focus-visible {
+    @apply outline-none ring-2 ring-accent ring-offset-2 ring-offset-surface;
+  }
+}
+
+@layer components {
+  /* Reused button/card styles - defined once here so every page stays
+     consistent instead of copy-pasting the same className string everywhere
+     (DRY principle from the project brief). */
+  .btn-primary {
+    @apply inline-flex items-center justify-center rounded-card bg-accent px-gutter py-3 font-medium text-white transition hover:bg-accent-dark disabled:cursor-not-allowed disabled:opacity-50;
+  }
+
+  .btn-secondary {
+    @apply inline-flex items-center justify-center rounded-card border border-brand-navy/15 bg-white px-gutter py-3 font-medium text-brand-navy transition hover:border-brand-navy/40;
+  }
+
+  .input-field {
+    @apply w-full rounded-card border border-brand-navy/15 bg-white px-4 py-2.5 text-sm text-brand-navy placeholder:text-brand-navy/40;
+  }
+
+  .card {
+    @apply rounded-card bg-surface-card shadow-card;
+  }
+
+  .section-wrap {
+    @apply mx-auto max-w-6xl px-gutter;
+  }
+}
