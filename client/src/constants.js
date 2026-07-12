@@ -24,6 +24,59 @@ export const VEHICLE_CATEGORIES = [
 
 export const VEHICLE_YEARS = Array.from({ length: 2025 - 2010 + 1 }, (_, i) => 2010 + i).reverse();
 
+// Search Options filter panel (SearchFilter.jsx) - values mirror the
+// columns added to the Vehicle model / server/seed.py so every option here
+// actually matches data in the database.
+export const VEHICLE_CONDITIONS = ["New", "Used"];
+
+export const FUEL_TYPES = ["Petrol", "Diesel", "Hybrid", "Electric"];
+
+export const TRANSMISSIONS = ["Automatic", "Manual"];
+
+export const DRIVE_TYPES = ["FWD", "RWD", "AWD", "4WD"];
+
+export const EXTERIOR_COLORS = ["White", "Black", "Silver", "Grey", "Blue", "Red", "Green", "Beige"];
+
+export const MAX_MILEAGE_OPTIONS = [
+  { label: "Under 20,000 km", value: 20000 },
+  { label: "Under 50,000 km", value: 50000 },
+  { label: "Under 100,000 km", value: 100000 },
+  { label: "Under 150,000 km", value: 150000 },
+];
+
+// Make -> Model options for the Search Options panel's cascading dropdowns.
+// Mirrors the make/model pairs in server/seed.py's MODEL_CATALOG so every
+// combination shown here actually exists in the seeded fleet.
+export const VEHICLE_MAKE_MODELS = [
+  { make: "Lincoln", model: "Town Car Limousine" },
+  { make: "Rolls-Royce", model: "Funeral Hearse" },
+  { make: "Toyota", model: "RAV4" },
+  { make: "Nissan", model: "X-Trail" },
+  { make: "Subaru", model: "Forester" },
+  { make: "Honda", model: "CR-V" },
+  { make: "Land Rover", model: "Range Rover" },
+  { make: "Mercedes-Benz", model: "C-Class" },
+  { make: "Volkswagen", model: "Golf" },
+  { make: "Toyota", model: "Corolla" },
+  { make: "Mazda", model: "Demio" },
+  { make: "Toyota", model: "Hilux" },
+  { make: "Ford", model: "Ranger" },
+  { make: "Isuzu", model: "D-Max" },
+  { make: "Toyota", model: "Hiace" },
+  { make: "Nissan", model: "Urvan" },
+  { make: "BMW", model: "4 Series" },
+  { make: "Porsche", model: "911" },
+  { make: "Bentley", model: "Continental GT" },
+  { make: "Toyota", model: "Land Cruiser 70" },
+  { make: "Toyota", model: "Land Cruiser Prado" },
+  { make: "Toyota", model: "Land Cruiser 200" },
+  { make: "Toyota", model: "Coaster Shuttle" },
+  { make: "Toyota", model: "Coaster" },
+  { make: "Scania", model: "Touring Coach" },
+];
+
+export const VEHICLE_MAKES = [...new Set(VEHICLE_MAKE_MODELS.map((m) => m.make))].sort();
+
 // Event types for the convoy/event booking flow - weddings, funerals,
 // safaris, and group transportation all book several vehicles at once (see
 // pages/EventBooking.jsx and POST /bookings/convoy on the backend).
@@ -128,8 +181,16 @@ export function previewConvoyDiscount(vehicleCount) {
 // reusing the exact same Wikimedia Commons photos as EVENT_THEMES above so
 // there's no new/unverified image URL introduced just for this. Rendered
 // as a 2x2 grid behind a dark overlay wash - see pages/Login.jsx.
+//
+// Top-left slot is a Mercedes-Benz E-Class 2020 (W213 facelift) rather than
+// the wedding car - swapped on request. Sourced from Wikimedia Commons
+// (same stable Special:FilePath hotlinking as every other photo here)
+// instead of the originally-requested mad4wheels.com link, which only
+// exposes a 420x280 thumbnail as a direct URL (its full-res photos require
+// a manual download click, no stable hotlink) and are licensed personal-use
+// only.
 export const AUTH_BG_IMAGES = [
-  commonsUrl("Turkmen_Decorated_wedding_car.jpg"),
+  commonsUrl("Mercedes-Benz_W213_Facelift_IMG_3726.jpg"),
   commonsUrl("Toyota_Land_Cruiser_200_002.JPG"),
   commonsUrl("Rolls_Royce_Funeral_Hearse_(1).jpg"),
   commonsUrl("Toyota_Coaster_Mini_Bus_2015.jpg"),

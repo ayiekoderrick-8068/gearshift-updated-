@@ -1,12 +1,14 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import { useCompare } from "../context/CompareContext";
 
 // Navbar shown on every page. Three different states depending on who's
 // looking at it: guest (not logged in), client, admin. See useAuth() for
 // where `user` comes from.
 export default function Navbar() {
   const { user, logout } = useAuth();
+  const { compareIds } = useCompare();
   const navigate = useNavigate();
   const [dropdownOpen, setDropdownOpen] = useState(false);
 
@@ -19,13 +21,21 @@ export default function Navbar() {
   return (
     <header className="sticky top-0 z-50 border-b border-brand-navy/10 bg-brand-navy text-white">
       <nav className="section-wrap flex items-center justify-between py-4">
-        <Link to="/" className="font-display text-xl font-bold tracking-tight">
-          Gear<span className="text-accent">Shift</span>
+        <Link to="/" className="flex flex-col leading-tight">
+          <span className="font-display text-xl font-bold tracking-tight">
+            Gear<span className="text-accent">Shift</span>
+          </span>
+          <span className="text-[11px] font-medium uppercase tracking-wide text-white/60">
+            Where Every Vehicle Finds a Home
+          </span>
         </Link>
 
         <div className="flex items-center gap-gutter text-sm font-medium">
           {/* Guest links - shown to everyone, logged in or not */}
           <Link to="/vehicles" className="text-white/80 hover:text-white">Browse cars</Link>
+          <Link to="/compare" className="text-white/80 hover:text-white">
+            Compare{compareIds.length > 0 && ` (${compareIds.length})`}
+          </Link>
 
           {!user && (
             <>

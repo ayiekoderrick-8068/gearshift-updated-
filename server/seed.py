@@ -53,45 +53,53 @@ def _commons(filename, width=800):
     return f"https://commons.wikimedia.org/wiki/Special:FilePath/{filename}?width={width}"
 
 
-# (make, model, category, base_daily_rate, Commons filename)
+# (make, model, category, base_daily_rate, Commons filename, fuel_type, transmission, drive)
 #
 # Limousine and Hearse are listed FIRST on purpose: build_fleet() below
 # cycles through this catalog to reach ~50 listings, and putting these two
 # at the front guarantees they show up in every pass (so the event/convoy
 # booking page - which needs several limos and hearses to pick from - always
 # has options, regardless of exactly where target_size lands).
+#
+# fuel_type/transmission/drive reflect how that real make+model is actually
+# specced (e.g. Kenyan-market pickups/Land Cruisers are predominantly diesel
+# and 4WD, hatchbacks are predominantly manual FWD) - not randomised, so the
+# Search Options filters (Fuel type/Transmission/Drive) return results that
+# make sense together.
 MODEL_CATALOG = [
-    ("Lincoln", "Town Car Limousine", "Limousine", 25000, "Lincoln_Town_Car_Limousine.jpg"),
-    ("Rolls-Royce", "Funeral Hearse", "Hearse", 20000, "Rolls_Royce_Funeral_Hearse_(1).jpg"),
-    ("Toyota", "RAV4", "SUV", 4500, "Toyota_RAV4_002.JPG"),
-    ("Nissan", "X-Trail", "SUV", 4200, "Nissan_X-Trail_(T33)_1X7A7179.jpg"),
-    ("Subaru", "Forester", "SUV", 5000, "2022_Subaru_Forester_Wilderness.jpg"),
-    ("Honda", "CR-V", "SUV", 4300, "Honda_CR-V_(6th_generation)_hybrid_DSC_7919.jpg"),
-    ("Land Rover", "Range Rover", "SUV", 15000, "Land_Rover_Range_Rover_P525_Autobiography_L405_black_(4).jpg"),
-    ("Mercedes-Benz", "C-Class", "Sedan", 7500, "Mercedes-Benz_C-Class_W205_FL_silver_(2).jpg"),
-    ("Volkswagen", "Golf", "Sedan", 3200, "Volkswagen_Golf_VII_GTI.JPG"),
-    ("Toyota", "Corolla", "Sedan", 2800, "2020_Toyota_Corolla_SE.jpg"),
-    ("Mazda", "Demio", "Sedan", 2200, "Mazda_Demio_DE_13-SKYACTIV.JPG"),
-    ("Toyota", "Hilux", "Truck", 6000, "Toyota_Hilux_J_4x4_2021.jpg"),
-    ("Ford", "Ranger", "Truck", 6200, "Ford_Ranger.JPG"),
-    ("Isuzu", "D-Max", "Truck", 5800, "Isuzu_D-Max_4x4_Rodeo_2021.jpg"),
-    ("Toyota", "Hiace", "Van", 5500, "2007_Toyota_Hiace_Van_LWB_KLH22.jpg"),
-    ("Nissan", "Urvan", "Van", 5300, "Nissan_NV350_Urvan_2.5_Premium_2020_(1).jpg"),
-    ("BMW", "4 Series", "Convertible", 8500, "BMW_4_Series.jpg"),
-    ("Porsche", "911", "Convertible", 18000, "Porsche_911_Turbo.jpg"),
-    ("Bentley", "Continental GT", "Convertible", 22000, "Bentley_Continental_GT_(front).jpg"),
+    ("Lincoln", "Town Car Limousine", "Limousine", 25000, "Lincoln_Town_Car_Limousine.jpg", "Petrol", "Automatic", "RWD"),
+    ("Rolls-Royce", "Funeral Hearse", "Hearse", 20000, "Rolls_Royce_Funeral_Hearse_(1).jpg", "Petrol", "Automatic", "RWD"),
+    ("Toyota", "RAV4", "SUV", 4500, "Toyota_RAV4_002.JPG", "Petrol", "Automatic", "AWD"),
+    ("Nissan", "X-Trail", "SUV", 4200, "Nissan_X-Trail_(T33)_1X7A7179.jpg", "Petrol", "Automatic", "AWD"),
+    ("Subaru", "Forester", "SUV", 5000, "2022_Subaru_Forester_Wilderness.jpg", "Petrol", "Automatic", "AWD"),
+    ("Honda", "CR-V", "SUV", 4300, "Honda_CR-V_(6th_generation)_hybrid_DSC_7919.jpg", "Hybrid", "Automatic", "AWD"),
+    ("Land Rover", "Range Rover", "SUV", 15000, "Land_Rover_Range_Rover_P525_Autobiography_L405_black_(4).jpg", "Diesel", "Automatic", "4WD"),
+    ("Mercedes-Benz", "C-Class", "Sedan", 7500, "Mercedes-Benz_C-Class_W205_FL_silver_(2).jpg", "Petrol", "Automatic", "RWD"),
+    ("Volkswagen", "Golf", "Sedan", 3200, "Volkswagen_Golf_VII_GTI.JPG", "Petrol", "Manual", "FWD"),
+    ("Toyota", "Corolla", "Sedan", 2800, "2020_Toyota_Corolla_SE.jpg", "Petrol", "Automatic", "FWD"),
+    ("Mazda", "Demio", "Sedan", 2200, "Mazda_Demio_DE_13-SKYACTIV.JPG", "Petrol", "Manual", "FWD"),
+    ("Toyota", "Hilux", "Truck", 6000, "Toyota_Hilux_J_4x4_2021.jpg", "Diesel", "Manual", "4WD"),
+    ("Ford", "Ranger", "Truck", 6200, "Ford_Ranger.JPG", "Diesel", "Automatic", "4WD"),
+    ("Isuzu", "D-Max", "Truck", 5800, "Isuzu_D-Max_4x4_Rodeo_2021.jpg", "Diesel", "Manual", "4WD"),
+    ("Toyota", "Hiace", "Van", 5500, "2007_Toyota_Hiace_Van_LWB_KLH22.jpg", "Diesel", "Manual", "RWD"),
+    ("Nissan", "Urvan", "Van", 5300, "Nissan_NV350_Urvan_2.5_Premium_2020_(1).jpg", "Diesel", "Manual", "RWD"),
+    ("BMW", "4 Series", "Convertible", 8500, "BMW_4_Series.jpg", "Petrol", "Automatic", "RWD"),
+    ("Porsche", "911", "Convertible", 18000, "Porsche_911_Turbo.jpg", "Petrol", "Automatic", "AWD"),
+    ("Bentley", "Continental GT", "Convertible", 22000, "Bentley_Continental_GT_(front).jpg", "Petrol", "Automatic", "AWD"),
     # Safari - three different Land Cruiser trims at three different price
     # points, per the brief: "different variety of those cars with
     # different prices" for tourists heading to parks/game reserves.
-    ("Toyota", "Land Cruiser 70", "Safari", 8000, "Toyota_Land_Cruiser_Prado_70_002.JPG"),
-    ("Toyota", "Land Cruiser Prado", "Safari", 11000, "Toyota_Land_Cruiser_Prado_120_003.JPG"),
-    ("Toyota", "Land Cruiser 200", "Safari", 16000, "Toyota_Land_Cruiser_200_002.JPG"),
+    ("Toyota", "Land Cruiser 70", "Safari", 8000, "Toyota_Land_Cruiser_Prado_70_002.JPG", "Diesel", "Manual", "4WD"),
+    ("Toyota", "Land Cruiser Prado", "Safari", 11000, "Toyota_Land_Cruiser_Prado_120_003.JPG", "Diesel", "Automatic", "4WD"),
+    ("Toyota", "Land Cruiser 200", "Safari", 16000, "Toyota_Land_Cruiser_200_002.JPG", "Diesel", "Automatic", "4WD"),
     # Bus - group transportation (school/company/tour groups), also a
     # dedicated category alongside the existing Van models.
-    ("Toyota", "Coaster Shuttle", "Bus", 9000, "Toyota_Coaster_012.JPG"),
-    ("Toyota", "Coaster", "Bus", 12000, "Toyota_Coaster_Mini_Bus_2015.jpg"),
-    ("Scania", "Touring Coach", "Bus", 20000, "KAUTRA_Scania_Touring_bus_in_Bergen.jpg"),
+    ("Toyota", "Coaster Shuttle", "Bus", 9000, "Toyota_Coaster_012.JPG", "Diesel", "Manual", "RWD"),
+    ("Toyota", "Coaster", "Bus", 12000, "Toyota_Coaster_Mini_Bus_2015.jpg", "Diesel", "Manual", "RWD"),
+    ("Scania", "Touring Coach", "Bus", 20000, "KAUTRA_Scania_Touring_bus_in_Bergen.jpg", "Diesel", "Manual", "RWD"),
 ]
+
+EXTERIOR_COLORS = ["White", "Black", "Silver", "Grey", "Blue", "Red", "Green", "Beige"]
 
 # Category-level marketing copy - written to actually sell the car rather
 # than repeat one bland sentence for every listing. Falls back to this by
@@ -194,7 +202,7 @@ def build_fleet(target_size=50):
     fleet = []
     i = 0
     while len(fleet) < target_size:
-        make, model, category, base_rate, filename = MODEL_CATALOG[i % len(MODEL_CATALOG)]
+        make, model, category, base_rate, filename, fuel_type, transmission, drive = MODEL_CATALOG[i % len(MODEL_CATALOG)]
         repeat_index = i // len(MODEL_CATALOG)  # 0 on first pass, 1 on second, ...
 
         year = 2024 - repeat_index - (i % 4)  # spreads years across 2018-2024ish
@@ -205,6 +213,19 @@ def build_fleet(target_size=50):
         template = DESCRIPTION_OVERRIDES.get(model, DESCRIPTION_TEMPLATES[category])
         description = template.format(year=year, make=make, model=model)
 
+        # Every 6th listing is a dealer-fresh "New" car with near-zero
+        # mileage; the rest scale mileage with age. Deriving condition
+        # from age alone would make it permanently empty in this catalog
+        # (the newest model year is 2024, already a couple of years old),
+        # so a fixed slice of the fleet is New regardless of year - same as
+        # a real lot always keeping a few brand-new units in stock.
+        if i % 6 == 0:
+            condition = "New"
+            mileage = (i * 137) % 3000
+        else:
+            condition = "Used"
+            mileage = max(1, (2025 - year)) * 9000 + ((i * 173) % 4000)
+
         fleet.append({
             "make": make,
             "model": model,
@@ -214,6 +235,12 @@ def build_fleet(target_size=50):
             "location": KENYAN_CITIES[i % len(KENYAN_CITIES)],
             "image_url": _commons(filename),
             "description": description,
+            "condition": condition,
+            "mileage": mileage,
+            "fuel_type": fuel_type,
+            "transmission": transmission,
+            "drive": drive,
+            "exterior_color": EXTERIOR_COLORS[i % len(EXTERIOR_COLORS)],
         })
         i += 1
 
@@ -310,6 +337,12 @@ def run():
                 category=data["category"],
                 image_url=data["image_url"],
                 description=data["description"],
+                condition=data["condition"],
+                mileage=data["mileage"],
+                fuel_type=data["fuel_type"],
+                transmission=data["transmission"],
+                drive=data["drive"],
+                exterior_color=data["exterior_color"],
                 owner_id=owners[i % len(owners)].id,
                 is_approved=True,
                 is_available=True,

@@ -28,6 +28,7 @@ const ResetPassword = lazy(() => import("./pages/ResetPassword"));
 const Profile = lazy(() => import("./pages/Profile"));
 const VehiclesBrowse = lazy(() => import("./pages/VehiclesBrowse"));
 const VehicleDetail = lazy(() => import("./pages/VehicleDetail"));
+const Compare = lazy(() => import("./pages/Compare"));
 const VehicleNew = lazy(() => import("./pages/VehicleNew"));
 const VehicleEdit = lazy(() => import("./pages/VehicleEdit"));
 const BookingNew = lazy(() => import("./pages/BookingNew"));
@@ -77,6 +78,7 @@ export default function App() {
             <Route path="/" element={<Landing />} />
             <Route path="/vehicles" element={<VehiclesBrowse />} />
             <Route path="/vehicles/:id" element={<VehicleDetail />} />
+            <Route path="/compare" element={<Compare />} />
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
             <Route path="/reset-password" element={<ResetPassword />} />

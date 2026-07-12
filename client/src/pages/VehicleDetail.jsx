@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import api from "../api";
 import { useAuth } from "../context/AuthContext";
+import { useCompare } from "../context/CompareContext";
 import FeatureBadge from "../components/FeatureBadge";
 import RatingStars from "../components/RatingStars";
 import LoadingSpinner from "../components/LoadingSpinner";
@@ -10,6 +11,7 @@ import LoadingSpinner from "../components/LoadingSpinner";
 export default function VehicleDetail() {
   const { id } = useParams();
   const { user } = useAuth();
+  const { compareIds, toggleCompare, maxCompare } = useCompare();
   const navigate = useNavigate();
   const [vehicle, setVehicle] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -35,6 +37,8 @@ export default function VehicleDetail() {
   const fallbackImage =
     "https://images.unsplash.com/photo-1493238792000-8113da705763?auto=format&fit=crop&w=1200&q=60";
   const isOwner = user?.id === vehicle.owner_id;
+  const isComparing = compareIds.includes(vehicle.id);
+  const compareFull = !isComparing && compareIds.length >= maxCompare;
 
   return (
     <div className="section-wrap py-section">
@@ -81,6 +85,16 @@ export default function VehicleDetail() {
             ) : (
               <Link to="/login" className="btn-primary">Log in to book</Link>
             )}
+
+            <button
+              type="button"
+              onClick={() => !compareFull && toggleCompare(vehicle.id)}
+              disabled={compareFull}
+              title={compareFull ? `You can compare up to ${maxCompare} cars` : undefined}
+              className="btn-secondary disabled:cursor-not-allowed disabled:opacity-50"
+            >
+              {isComparing ? "✓ Comparing" : "+ Add to compare"}
+            </button>
           </div>
         </div>
       </div>

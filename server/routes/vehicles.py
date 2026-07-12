@@ -33,6 +33,54 @@ def list_vehicles():
     if max_rate:
         query = query.filter(Vehicle.daily_rate <= float(max_rate))
 
+    # Search Options panel filters (see SearchFilter.jsx).
+    condition = request.args.get("condition")
+    if condition:
+        query = query.filter(Vehicle.condition == condition)
+
+    make = request.args.get("make")
+    if make:
+        query = query.filter(Vehicle.make == make)
+
+    model = request.args.get("model")
+    if model:
+        query = query.filter(Vehicle.model == model)
+
+    max_mileage = request.args.get("max_mileage")
+    if max_mileage:
+        query = query.filter(Vehicle.mileage <= int(max_mileage))
+
+    fuel_type = request.args.get("fuel_type")
+    if fuel_type:
+        query = query.filter(Vehicle.fuel_type == fuel_type)
+
+    year = request.args.get("year")
+    if year:
+        query = query.filter(Vehicle.year == int(year))
+
+    transmission = request.args.get("transmission")
+    if transmission:
+        query = query.filter(Vehicle.transmission == transmission)
+
+    drive = request.args.get("drive")
+    if drive:
+        query = query.filter(Vehicle.drive == drive)
+
+    exterior_color = request.args.get("exterior_color")
+    if exterior_color:
+        query = query.filter(Vehicle.exterior_color == exterior_color)
+
+    keyword = request.args.get("q")
+    if keyword:
+        like = f"%{keyword}%"
+        query = query.filter(
+            db.or_(
+                Vehicle.make.ilike(like),
+                Vehicle.model.ilike(like),
+                Vehicle.description.ilike(like),
+            )
+        )
+
     vehicles = query.order_by(Vehicle.created_at.desc()).all()
     return jsonify([v.to_dict() for v in vehicles]), 200
 
@@ -63,6 +111,12 @@ def create_vehicle():
         category=data["category"],
         image_url=data.get("image_url"),
         description=data.get("description"),
+        condition=data.get("condition", "Used"),
+        mileage=data.get("mileage", 0),
+        fuel_type=data.get("fuel_type", "Petrol"),
+        transmission=data.get("transmission", "Automatic"),
+        drive=data.get("drive", "FWD"),
+        exterior_color=data.get("exterior_color", "White"),
         owner_id=g.current_user.id,
         is_approved=False,  # every new listing needs admin approval first
     )
@@ -90,6 +144,7 @@ def update_vehicle(vehicle_id):
     editable_fields = [
         "make", "model", "year", "daily_rate", "location",
         "category", "image_url", "description", "is_available",
+        "condition", "mileage", "fuel_type", "transmission", "drive", "exterior_color",
     ]
     for field in editable_fields:
         if field in data:
