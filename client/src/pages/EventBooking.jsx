@@ -170,8 +170,8 @@ export default function EventBooking() {
           event-type + dates + phone "mini-form" floats over the bottom of
           the photo like a booking widget. */}
       <div
-        className="relative overflow-hidden bg-cover bg-center"
-        style={{ backgroundImage: `url(${theme.bgImage})` }}
+        className="relative overflow-hidden bg-cover"
+        style={{ backgroundImage: `url(${theme.bgImage})`, backgroundPosition: theme.bgPosition || "center" }}
       >
         <div className={`absolute inset-0 ${theme.gradient}`} />
 

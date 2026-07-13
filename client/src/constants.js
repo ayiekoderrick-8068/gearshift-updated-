@@ -118,7 +118,18 @@ function commonsUrl(filename, width = 1600) {
 
 export const EVENT_THEMES = {
   wedding: {
-    bgImage: commonsUrl("Turkmen_Decorated_wedding_car.jpg"),
+    // A real multi-car wedding convoy (ribbon-decorated cars driving in a
+    // line) - a genuine convoy rather than a single vehicle, at the cost of
+    // the cars themselves being ordinary rather than premium (no
+    // free-licensed photo of several luxury cars in convoy formation
+    // exists on Wikimedia Commons - verified by extensive search).
+    bgImage: commonsUrl("A_wedding_convoy_in_Sivas_Province.jpg"),
+    // The convoy sits low and left-of-centre in the source photo (the top
+    // half is just sky/rooftops) - default "center" cropping cuts the lead
+    // car off, so this pins the crop to where the cars actually are. Nudged
+    // right from 30% so the trailing cars in the queue stay in frame on
+    // narrow/tall viewports too, not just the lead car.
+    bgPosition: "38% 88%",
     gradient: "bg-gradient-to-r from-rose-950/90 via-rose-900/60 to-transparent",
     textClass: "text-white",
     emoji: "💍",
@@ -126,7 +137,18 @@ export const EVENT_THEMES = {
     body: "Limousines and premium cars for the bridal party, with a discount the more you book together.",
   },
   funeral: {
-    bgImage: commonsUrl("Rolls_Royce_Funeral_Hearse_(1).jpg"),
+    // A real funeral motorcade (multiple vehicles following the lead car).
+    // Note: the lead vehicle's memorial wreath includes a photo of the
+    // actual deceased person - kept per explicit request, but flagged here
+    // since it's a real person's funeral, not a staged/generic photo.
+    bgImage: commonsUrl("Tenom_Sabah_Funeral-motorcade-01.jpg"),
+    // Pulls the crop down off the sky/hillside and onto the motorcade
+    // itself, which fills the lower two-thirds of the source photo. Shifted
+    // further right than a naive center/45% would suggest - on narrow/tall
+    // viewports the lead van's cab was filling the whole frame with none of
+    // the trailing convoy visible, so this favors the vehicles queued
+    // behind it over the lead van alone.
+    bgPosition: "75% 70%",
     gradient: "bg-gradient-to-r from-slate-950/90 via-slate-900/65 to-transparent",
     textClass: "text-white",
     emoji: "🕊️",
@@ -134,7 +156,12 @@ export const EVENT_THEMES = {
     body: "A dignified hearse and accompanying vehicles, with experienced chauffeurs available.",
   },
   safari: {
-    bgImage: commonsUrl("Toyota_Land_Cruiser_200_002.JPG"),
+    // Multiple safari vehicles visible watching an elephant herd - the
+    // closest free-licensed match to a "safari 4x4 convoy" found; wildlife
+    // is the visual focus rather than the vehicles themselves (no genuine
+    // vehicle-focused multi-4x4 convoy photo turned up after extensive
+    // search).
+    bgImage: commonsUrl("Loxodonta_africana_group_surrounded_by_game_viewer_vehicles.jpg"),
     gradient: "bg-gradient-to-r from-emerald-950/90 via-emerald-900/55 to-transparent",
     textClass: "text-white",
     emoji: "🦁",
