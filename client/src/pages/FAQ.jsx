@@ -14,7 +14,7 @@ const FAQS = [
   },
   {
     q: "I'm an international traveller - can I still rent a car?",
-    a: "Yes. Your home-country license or an international driving permit (IDP) is accepted for self-drive, or choose \"with driver\" if you'd rather not navigate unfamiliar roads yourself.",
+    a: "Yes. Your home-country license or an international driving permit (IDP) is accepted for self-drive, or choose \"with chauffeur\" if you'd rather not navigate unfamiliar roads yourself.",
   },
   {
     q: "Do I need a Kenyan phone number to book?",
@@ -33,8 +33,8 @@ const FAQS = [
     a: "Nairobi, Mombasa, Kisumu, Nakuru and Eldoret today. Browse by location on the vehicles page to see what's available near you.",
   },
   {
-    q: "Can I hire a car with a driver instead of self-drive?",
-    a: "Yes. When booking, choose \"With driver\" and pick from our rated chauffeurs - their daily rate is added on top of the vehicle's rate.",
+    q: "Can I hire a car with a chauffeur instead of self-drive?",
+    a: "Yes. When booking, choose \"With chauffeur\" and pick from our rated chauffeurs - their daily rate is added on top of the vehicle's rate.",
   },
   {
     q: "Can I book several vehicles at once, e.g. for a wedding or group trip?",

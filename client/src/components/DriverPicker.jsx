@@ -44,20 +44,20 @@ export default function DriverPicker({ hireType, setHireType, driverId, setDrive
             hireType === "chauffeur" ? "border-accent bg-accent/10 font-medium text-accent" : "border-brand-navy/15"
           }`}
         >
-          With driver
+          With chauffeur
         </button>
       </div>
 
       {hireType === "chauffeur" && (
         <div className="mt-3">
-          <label className="mb-1 block text-sm font-medium">Choose a driver</label>
+          <label className="mb-1 block text-sm font-medium">Choose a chauffeur</label>
           <select
             required
             value={driverId || ""}
             onChange={(e) => setDriverId(Number(e.target.value))}
             className="input-field"
           >
-            <option value="" disabled>Select a driver...</option>
+            <option value="" disabled>Select a chauffeur...</option>
             {availableDrivers.map((d) => (
               <option key={d.id} value={d.id}>
                 {d.name} - {d.rating.toFixed(1)}/5 - KES {Number(d.daily_rate).toLocaleString()}/day
@@ -66,7 +66,7 @@ export default function DriverPicker({ hireType, setHireType, driverId, setDrive
           </select>
           {excludeDriverIds.length > 0 && (
             <p className="mt-1 text-xs text-brand-navy/50">
-              Drivers already assigned to another vehicle in this convoy aren't shown - one driver can't be in two cars at once.
+              Chauffeurs already assigned to another vehicle in this convoy aren't shown - one chauffeur can't be in two cars at once.
             </p>
           )}
           {/* Small preview of the selected driver's rating as stars, since
@@ -74,7 +74,7 @@ export default function DriverPicker({ hireType, setHireType, driverId, setDrive
           {driverId && drivers.find((d) => d.id === driverId) && (
             <div className="mt-1 flex items-center gap-2 text-xs text-brand-navy/60">
               <RatingStars rating={drivers.find((d) => d.id === driverId).rating} size="text-sm" />
-              <span>Higher-rated drivers cost more per day.</span>
+              <span>Higher-rated chauffeurs cost more per day.</span>
             </div>
           )}
         </div>

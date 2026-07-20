@@ -38,7 +38,6 @@ class Booking(db.Model):
     # that event type (airport pickup, hotel transfer, multi-day rental,
     # ...), see VALID_TRAVELLER_SERVICES in routes/bookings.py.
     traveller_service = db.Column(db.String(30), nullable=True)
-    flight_number = db.Column(db.String(20), nullable=True)
     pickup_location = db.Column(db.String(120), nullable=True)
     dropoff_location = db.Column(db.String(120), nullable=True)
     meet_and_greet = db.Column(db.Boolean, nullable=False, default=False)
@@ -64,7 +63,6 @@ class Booking(db.Model):
             "convoy_id": self.convoy_id,
             "discount_percent": self.discount_percent,
             "traveller_service": self.traveller_service,
-            "flight_number": self.flight_number,
             "pickup_location": self.pickup_location,
             "dropoff_location": self.dropoff_location,
             "meet_and_greet": self.meet_and_greet,

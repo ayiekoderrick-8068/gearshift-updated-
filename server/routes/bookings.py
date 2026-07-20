@@ -196,7 +196,7 @@ def create_convoy_booking():
         "traveller_service": "airport_pickup" | "airport_dropoff" | "round_trip"
                               | "hotel_transfer" | "tourist_transfer"
                               | "multi_day_driver" | "multi_destination",
-        "flight_number": "...", "pickup_location": "...", "dropoff_location": "...",
+        "pickup_location": "...", "dropoff_location": "...",
         "meet_and_greet": true,
         "vehicles": [
           { "vehicle_id": 3, "hire_type": "chauffeur", "driver_id": 2 },
@@ -275,7 +275,6 @@ def create_convoy_booking():
 
     # Only meaningful for event_type == "international_traveller" - the
     # columns stay null/false for every other event type.
-    flight_number = (data.get("flight_number") or "").strip()[:20] or None
     pickup_location = (data.get("pickup_location") or "").strip()[:120] or None
     dropoff_location = (data.get("dropoff_location") or "").strip()[:120] or None
     meet_and_greet = bool(data.get("meet_and_greet")) if traveller_service else False
@@ -300,7 +299,6 @@ def create_convoy_booking():
             convoy_id=convoy_id,
             discount_percent=discount * 100,
             traveller_service=traveller_service,
-            flight_number=flight_number,
             pickup_location=pickup_location,
             dropoff_location=dropoff_location,
             meet_and_greet=meet_and_greet,

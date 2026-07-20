@@ -91,8 +91,8 @@ export const EVENT_TYPES = [
 
 // Sub-services offered under the "international_traveller" event type -
 // EventBooking.jsx shows this as a second picker once that event type is
-// selected, and shows/requires the pickup/drop-off/flight-number/meet-and-
-// greet fields below according to each service's `fields` flags. Mirrored
+// selected, and shows/requires the pickup/drop-off/meet-and-greet fields
+// below according to each service's `fields` flags. Mirrored
 // server-side by VALID_TRAVELLER_SERVICES in server/routes/bookings.py,
 // which is the authoritative allowlist - this is just what drives the UI.
 export const TRAVELLER_SERVICES = [
@@ -100,43 +100,43 @@ export const TRAVELLER_SERVICES = [
     value: "airport_pickup",
     label: "Airport Pickup",
     description: "Be picked up from the airport and taken to your destination.",
-    fields: { pickupLocation: false, dropoffLocation: true, flightNumber: true, meetAndGreet: true },
+    fields: { pickupLocation: false, dropoffLocation: true, meetAndGreet: true },
   },
   {
     value: "airport_dropoff",
     label: "Airport Drop-off",
     description: "Transport from your location to the airport.",
-    fields: { pickupLocation: true, dropoffLocation: false, flightNumber: true, meetAndGreet: false },
+    fields: { pickupLocation: true, dropoffLocation: false, meetAndGreet: false },
   },
   {
     value: "round_trip",
     label: "Round-Trip Airport Transfer",
     description: "Book both an airport pickup and a return airport drop-off together.",
-    fields: { pickupLocation: true, dropoffLocation: true, flightNumber: true, meetAndGreet: true },
+    fields: { pickupLocation: true, dropoffLocation: true, meetAndGreet: true },
   },
   {
     value: "hotel_transfer",
     label: "Hotel & Accommodation Transfer",
     description: "Airport to hotel, or hotel to airport.",
-    fields: { pickupLocation: true, dropoffLocation: true, flightNumber: true, meetAndGreet: true },
+    fields: { pickupLocation: true, dropoffLocation: true, meetAndGreet: true },
   },
   {
     value: "tourist_transfer",
     label: "Tourist Destination Transfer",
     description: "Transfers to destinations such as Maasai Mara, Diani, Amboseli and more.",
-    fields: { pickupLocation: true, dropoffLocation: true, flightNumber: false, meetAndGreet: false },
+    fields: { pickupLocation: true, dropoffLocation: true, meetAndGreet: false },
   },
   {
     value: "multi_day_driver",
-    label: "Multi-Day Rental with Driver",
-    description: "A vehicle and driver for several days of touring around the country.",
-    fields: { pickupLocation: true, dropoffLocation: false, flightNumber: false, meetAndGreet: false },
+    label: "Multi-Day Rental with Chauffeur",
+    description: "A vehicle and chauffeur for several days of touring around the country.",
+    fields: { pickupLocation: true, dropoffLocation: false, meetAndGreet: false },
   },
   {
     value: "multi_destination",
     label: "Multiple Destination Booking",
     description: "Airport, hotel, tourist attraction, hotel - list your stops in order in the notes below.",
-    fields: { pickupLocation: true, dropoffLocation: true, flightNumber: false, meetAndGreet: false },
+    fields: { pickupLocation: true, dropoffLocation: true, meetAndGreet: false },
   },
 ];
 
@@ -232,7 +232,7 @@ export const EVENT_THEMES = {
     gradient: "bg-gradient-to-r from-indigo-950/90 via-indigo-900/55 to-transparent",
     textClass: "text-white",
     heading: "Arriving in Kenya? We'll be at the gate.",
-    body: "Airport pickups, hotel transfers, and multi-day touring with an experienced driver.",
+    body: "Airport pickups, hotel transfers, and multi-day touring with an experienced chauffeur.",
   },
   other: {
     bgImage: commonsUrl("Land_Rover_Range_Rover_P525_Autobiography_L405_black_(4).jpg"),

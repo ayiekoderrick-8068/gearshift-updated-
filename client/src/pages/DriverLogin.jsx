@@ -39,9 +39,9 @@ export default function DriverLogin() {
       <div className="absolute inset-0 bg-brand-navy-dark/80" />
 
       <div className="relative card w-full max-w-md space-y-gutter p-gutter-lg">
-        <h1 className="text-2xl">Driver log in</h1>
+        <h1 className="text-2xl">Chauffeur log in</h1>
         <p className="text-sm text-brand-navy/60">
-          For GearShift chauffeurs only. Not a driver yet?{" "}
+          For GearShift chauffeurs only. Not a chauffeur yet?{" "}
           <Link to="/become-a-driver" className="text-accent hover:underline">Apply here</Link>.
         </p>
 

@@ -26,13 +26,14 @@ export default function Navbar() {
             Gear<span className="text-accent">Shift</span>
           </span>
           <span className="text-[11px] font-medium uppercase tracking-wide text-white/60">
-            Where Every Vehicle Finds a Home
+            Car Rental For Your Luxury Drive
           </span>
         </Link>
 
         <div className="flex items-center gap-gutter text-sm font-medium">
           {/* Guest links - shown to everyone, logged in or not */}
           <Link to="/vehicles" className="text-white/80 hover:text-white">Browse cars</Link>
+          <Link to="/services" className="text-white/80 hover:text-white">Services</Link>
           <Link to="/compare" className="text-white/80 hover:text-white">
             Compare{compareIds.length > 0 && ` (${compareIds.length})`}
           </Link>

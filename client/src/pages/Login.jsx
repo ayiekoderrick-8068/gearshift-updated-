@@ -88,7 +88,7 @@ export default function Login() {
 
           <div className="border-t border-brand-navy/10 pt-gutter text-center text-sm text-brand-navy/60">
             <p>
-              Already a GearShift driver? <Link to="/driver-login" className="text-accent hover:underline">Log in here</Link>
+              Already a GearShift chauffeur? <Link to="/driver-login" className="text-accent hover:underline">Log in here</Link>
             </p>
             <p className="mt-1">
               Chauffeur for hire? <Link to="/become-a-driver" className="text-accent hover:underline">Apply to drive with us</Link>

@@ -36,7 +36,6 @@ export default function EventBooking() {
   // See TRAVELLER_SERVICES in constants.js for which fields each service
   // actually shows/requires.
   const [travellerService, setTravellerService] = useState(TRAVELLER_SERVICES[0].value);
-  const [flightNumber, setFlightNumber] = useState("");
   const [pickupLocation, setPickupLocation] = useState("");
   const [dropoffLocation, setDropoffLocation] = useState("");
   const [meetAndGreet, setMeetAndGreet] = useState(false);
@@ -60,7 +59,6 @@ export default function EventBooking() {
   useEffect(() => {
     setSelections({});
     setTravellerService(TRAVELLER_SERVICES[0].value);
-    setFlightNumber("");
     setPickupLocation("");
     setDropoffLocation("");
     setMeetAndGreet(false);
@@ -161,7 +159,7 @@ export default function EventBooking() {
     }
     for (const v of selectedVehicles) {
       if (selections[v.id].hireType === "chauffeur" && !selections[v.id].driverId) {
-        setError(`Choose a driver for the ${v.make} ${v.model}, or switch it to self-drive.`);
+        setError(`Choose a chauffeur for the ${v.make} ${v.model}, or switch it to self-drive.`);
         return;
       }
     }
@@ -176,7 +174,6 @@ export default function EventBooking() {
         contact_phone: contactPhone,
         ...(eventType === "international_traveller" && {
           traveller_service: travellerService,
-          flight_number: flightNumber || null,
           pickup_location: pickupLocation || null,
           dropoff_location: dropoffLocation || null,
           meet_and_greet: meetAndGreet,
@@ -270,18 +267,6 @@ export default function EventBooking() {
                         value={dropoffLocation}
                         onChange={(e) => setDropoffLocation(e.target.value)}
                         placeholder="e.g. JKIA Terminal 1A"
-                        className="input-field"
-                      />
-                    </div>
-                  )}
-                  {selectedService.fields.flightNumber && (
-                    <div>
-                      <label className="mb-1 block text-sm font-medium">Flight number (optional)</label>
-                      <input
-                        type="text"
-                        value={flightNumber}
-                        onChange={(e) => setFlightNumber(e.target.value)}
-                        placeholder="e.g. KQ100"
                         className="input-field"
                       />
                     </div>

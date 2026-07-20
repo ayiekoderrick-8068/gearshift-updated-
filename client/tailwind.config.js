@@ -42,6 +42,9 @@ export default {
         display: ["\"Space Grotesk\"", "sans-serif"],
         // Body font - used for paragraphs, labels, inputs.
         sans: ["Inter", "sans-serif"],
+        // Elegant italic serif reserved for the /services hero headline -
+        // see pages/Services.jsx. Not used elsewhere in the app.
+        serif: ["\"Playfair Display\"", "serif"],
       },
       // Custom spacing scale on top of Tailwind's defaults. Section paddings
       // and card gaps use these named tokens (gutter / section) rather than

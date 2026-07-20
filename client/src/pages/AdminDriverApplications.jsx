@@ -44,7 +44,7 @@ export default function AdminDriverApplications() {
 
   return (
     <div className="section-wrap py-section">
-      <h1 className="mb-gutter-lg text-3xl">Driver applications</h1>
+      <h1 className="mb-gutter-lg text-3xl">Chauffeur applications</h1>
 
       {applications.length === 0 ? (
         <div className="card p-section text-center text-brand-navy/60">No applications yet.</div>
@@ -101,7 +101,7 @@ export default function AdminDriverApplications() {
       )}
 
       <p className="mt-gutter text-xs text-brand-navy/50">
-        Approving an application here doesn't automatically add them as a bookable driver -
+        Approving an application here doesn't automatically add them as a bookable chauffeur -
         add them to the Driver table (server/seed.py or a future /drivers admin form) once
         you've set their rate.
       </p>

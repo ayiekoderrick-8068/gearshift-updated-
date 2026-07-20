@@ -85,7 +85,6 @@ export default function DriverPortal() {
                         <p className="text-brand-navy/60">
                           {b.pickup_location && <>From {b.pickup_location} </>}
                           {b.dropoff_location && <>&rarr; {b.dropoff_location} </>}
-                          {b.flight_number && <>&middot; Flight {b.flight_number} </>}
                           {b.meet_and_greet && <>&middot; Meet &amp; greet</>}
                         </p>
                       )}

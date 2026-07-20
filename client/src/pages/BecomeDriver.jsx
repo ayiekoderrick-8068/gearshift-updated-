@@ -105,7 +105,7 @@ export default function BecomeDriver() {
     <div className="section-wrap max-w-xl py-section">
       <h1 className="mb-1 text-3xl">Drive with GearShift</h1>
       <p className="mb-gutter-lg text-brand-navy/60">
-        Chauffeur for hire, or want to become one of our drivers? Tell us about yourself and
+        Chauffeur for hire, or want to become one of our chauffeurs? Tell us about yourself and
         attach your CV - our admin team reviews every application.
       </p>
 

@@ -56,12 +56,11 @@ export default function MyBookings() {
                   <p className="text-sm text-brand-navy/60">
                     {b.pickup_location && <>From {b.pickup_location} </>}
                     {b.dropoff_location && <>&rarr; {b.dropoff_location} </>}
-                    {b.flight_number && <>&middot; Flight {b.flight_number} </>}
                     {b.meet_and_greet && <>&middot; Meet &amp; greet</>}
                   </p>
                 )}
                 <p className="text-sm text-brand-navy/60">
-                  {b.hire_type === "chauffeur" ? `With driver${b.driver_name ? ` - ${b.driver_name}` : ""}` : "Self-drive"}
+                  {b.hire_type === "chauffeur" ? `With chauffeur${b.driver_name ? ` - ${b.driver_name}` : ""}` : "Self-drive"}
                   {/* driver_status tracks whether the assigned driver has responded
                       yet - see routes/drivers.py's /driver/bookings/<id> and
                       pages/DriverPortal.jsx where they accept/decline. */}

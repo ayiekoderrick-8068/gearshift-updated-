@@ -50,7 +50,7 @@ export default function AdminDashboard() {
     { to: "/admin/users", label: "Manage users" },
     { to: "/admin/vehicles", label: "Review vehicle listings" },
     { to: "/admin/bookings", label: "View all bookings" },
-    { to: "/admin/driver-applications", label: "Review driver applications" },
+    { to: "/admin/driver-applications", label: "Review chauffeur applications" },
     { to: "/admin/contact-messages", label: "View contact messages" },
   ];
 

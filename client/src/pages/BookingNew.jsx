@@ -144,7 +144,7 @@ export default function BookingNew() {
             </div>
             {hireType === "chauffeur" && driverId && (
               <div className="flex justify-between text-brand-navy/70">
-                <span>{days} day{days > 1 ? "s" : ""} &times; KES {Number(driverDailyRate).toLocaleString()} (driver)</span>
+                <span>{days} day{days > 1 ? "s" : ""} &times; KES {Number(driverDailyRate).toLocaleString()} (chauffeur)</span>
                 <span>KES {driverCost.toLocaleString()}</span>
               </div>
             )}
