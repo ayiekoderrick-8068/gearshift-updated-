@@ -1,10 +1,4 @@
-"""
-User model - Person A.
 
-Covers all three account types (guest is just "no user row"; client and
-admin are both User rows distinguished by `role`). 10 non-PK columns, well
-past the 4-column minimum in the brief.
-"""
 from datetime import datetime
 from extensions import db
 

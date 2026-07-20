@@ -51,6 +51,7 @@ export default function AdminDashboard() {
     { to: "/admin/vehicles", label: "Review vehicle listings" },
     { to: "/admin/bookings", label: "View all bookings" },
     { to: "/admin/driver-applications", label: "Review driver applications" },
+    { to: "/admin/contact-messages", label: "View contact messages" },
   ];
 
   const pendingCount = recentBookings.filter((b) => b.status === "pending").length;

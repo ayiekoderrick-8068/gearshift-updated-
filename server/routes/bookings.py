@@ -29,22 +29,29 @@ from utils.decorators import jwt_required
 
 bookings_bp = Blueprint("bookings", __name__)
 
-# Convoy discount tiers - looked up by vehicle count. Tuned so a couple's
-# wedding car + one extra (2 vehicles) still gets a token discount, and a
-# big funeral/corporate convoy (6+) gets the best rate. Feel free to adjust
-# these numbers - they're the only place the discount logic lives.
 CONVOY_DISCOUNT_TIERS = [
     (6, 0.15),
     (4, 0.10),
     (2, 0.05),
 ]
 
-# Kenyan phone number format: +254 followed by exactly 9 digits, e.g.
-# +254795038762. No spaces, no letters - the frontend strips/validates this
-# same pattern before submitting, this is the authoritative server-side check.
 PHONE_PATTERN = re.compile(r"^\+254\d{9}$")
 
-VALID_EVENT_TYPES = ("wedding", "funeral", "safari", "group_transportation", "other")
+VALID_EVENT_TYPES = ("wedding", "funeral", "safari", "group_transportation", "international_traveller", "other")
+
+# Sub-services offered under the "international_traveller" event type - see
+# TRAVELLER_SERVICES in client/src/constants.js, which is the source of
+# truth for the label/description/which-fields-are-required-for-which-service
+# shown in the UI. This tuple is just the server-side allowlist.
+VALID_TRAVELLER_SERVICES = (
+    "airport_pickup",
+    "airport_dropoff",
+    "round_trip",
+    "hotel_transfer",
+    "tourist_transfer",
+    "multi_day_driver",
+    "multi_destination",
+)
 
 
 def _parse_date(value):
@@ -180,10 +187,17 @@ def create_convoy_booking():
 
     Body:
       {
-        "event_type": "wedding" | "funeral" | "safari" | "group_transportation" | "other",
+        "event_type": "wedding" | "funeral" | "safari" | "group_transportation" | "international_traveller" | "other",
         "start_date": "YYYY-MM-DD", "end_date": "YYYY-MM-DD",
         "contact_phone": "+254795038762",
         "notes": "...",
+        # Only when event_type is "international_traveller" - see
+        # VALID_TRAVELLER_SERVICES above.
+        "traveller_service": "airport_pickup" | "airport_dropoff" | "round_trip"
+                              | "hotel_transfer" | "tourist_transfer"
+                              | "multi_day_driver" | "multi_destination",
+        "flight_number": "...", "pickup_location": "...", "dropoff_location": "...",
+        "meet_and_greet": true,
         "vehicles": [
           { "vehicle_id": 3, "hire_type": "chauffeur", "driver_id": 2 },
           { "vehicle_id": 7, "hire_type": "self_drive" }
@@ -199,6 +213,12 @@ def create_convoy_booking():
 
     if event_type not in VALID_EVENT_TYPES:
         event_type = "other"
+
+    traveller_service = None
+    if event_type == "international_traveller":
+        traveller_service = data.get("traveller_service")
+        if traveller_service not in VALID_TRAVELLER_SERVICES:
+            return jsonify({"error": "traveller_service is required for an international traveller booking and must be one of: " + ", ".join(VALID_TRAVELLER_SERVICES)}), 400
 
     if not (start_date and end_date) or len(vehicles_payload) < 1:
         return jsonify({"error": "start_date, end_date and at least one vehicle are required"}), 400
@@ -253,6 +273,13 @@ def create_convoy_booking():
     discount = _convoy_discount(len(resolved))
     convoy_id = uuid.uuid4().hex
 
+    # Only meaningful for event_type == "international_traveller" - the
+    # columns stay null/false for every other event type.
+    flight_number = (data.get("flight_number") or "").strip()[:20] or None
+    pickup_location = (data.get("pickup_location") or "").strip()[:120] or None
+    dropoff_location = (data.get("dropoff_location") or "").strip()[:120] or None
+    meet_and_greet = bool(data.get("meet_and_greet")) if traveller_service else False
+
     created = []
     for vehicle, driver, hire_type in resolved:
         base_price = _price_for_vehicle(vehicle, driver, days)
@@ -272,6 +299,11 @@ def create_convoy_booking():
             is_convoy=True,
             convoy_id=convoy_id,
             discount_percent=discount * 100,
+            traveller_service=traveller_service,
+            flight_number=flight_number,
+            pickup_location=pickup_location,
+            dropoff_location=dropoff_location,
+            meet_and_greet=meet_and_greet,
         )
         db.session.add(booking)
         created.append(booking)

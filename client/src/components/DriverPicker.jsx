@@ -60,7 +60,7 @@ export default function DriverPicker({ hireType, setHireType, driverId, setDrive
             <option value="" disabled>Select a driver...</option>
             {availableDrivers.map((d) => (
               <option key={d.id} value={d.id}>
-                {d.name} - {d.rating.toFixed(1)}★ - KES {Number(d.daily_rate).toLocaleString()}/day
+                {d.name} - {d.rating.toFixed(1)}/5 - KES {Number(d.daily_rate).toLocaleString()}/day
               </option>
             ))}
           </select>

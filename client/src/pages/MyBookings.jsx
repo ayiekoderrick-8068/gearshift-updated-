@@ -47,11 +47,19 @@ export default function MyBookings() {
                   <p className="font-display text-lg font-semibold">{b.vehicle_make} {b.vehicle_model}</p>
                   {b.is_convoy && (
                     <span className="rounded-full bg-accent/10 px-2.5 py-0.5 text-xs font-semibold capitalize text-accent">
-                      {b.event_type} convoy
+                      {b.event_type?.replace("_", " ")} convoy
                     </span>
                   )}
                 </div>
                 <p className="text-sm text-brand-navy/60">{b.start_date} &rarr; {b.end_date}</p>
+                {b.traveller_service && (
+                  <p className="text-sm text-brand-navy/60">
+                    {b.pickup_location && <>From {b.pickup_location} </>}
+                    {b.dropoff_location && <>&rarr; {b.dropoff_location} </>}
+                    {b.flight_number && <>&middot; Flight {b.flight_number} </>}
+                    {b.meet_and_greet && <>&middot; Meet &amp; greet</>}
+                  </p>
+                )}
                 <p className="text-sm text-brand-navy/60">
                   {b.hire_type === "chauffeur" ? `With driver${b.driver_name ? ` - ${b.driver_name}` : ""}` : "Self-drive"}
                   {/* driver_status tracks whether the assigned driver has responded
@@ -86,14 +94,14 @@ export default function MyBookings() {
                   <div className="flex gap-1">
                     {[1, 2, 3, 4, 5].map((n) => (
                       <button key={n} onClick={() => submitReview(b.id, n)} className="text-xl text-accent" title={`${n} stars`}>
-                        ★
+                        *
                       </button>
                     ))}
                   </div>
                 )}
 
                 {b.review_rating && (
-                  <span className="text-sm text-brand-navy/60">You rated: {"★".repeat(b.review_rating)}</span>
+                  <span className="text-sm text-brand-navy/60">You rated: {"*".repeat(b.review_rating)}</span>
                 )}
               </div>
             </div>

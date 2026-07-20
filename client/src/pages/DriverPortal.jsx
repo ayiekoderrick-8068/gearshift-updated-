@@ -81,6 +81,14 @@ export default function DriverPortal() {
                         {b.start_date} &rarr; {b.end_date}
                         {b.event_type && b.event_type !== "other" && ` · ${b.event_type.replace("_", " ")}`}
                       </p>
+                      {b.traveller_service && (
+                        <p className="text-brand-navy/60">
+                          {b.pickup_location && <>From {b.pickup_location} </>}
+                          {b.dropoff_location && <>&rarr; {b.dropoff_location} </>}
+                          {b.flight_number && <>&middot; Flight {b.flight_number} </>}
+                          {b.meet_and_greet && <>&middot; Meet &amp; greet</>}
+                        </p>
+                      )}
                       <p className="text-brand-navy/60">Contact: {b.contact_phone}</p>
                     </div>
                     <div className="flex gap-2">

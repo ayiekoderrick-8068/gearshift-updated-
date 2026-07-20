@@ -65,8 +65,6 @@ class Vehicle(db.Model):
             "exterior_color": self.exterior_color,
             "is_approved": self.is_approved,
             "owner_id": self.owner_id,
-            # Nested owner info so the frontend doesn't need a second request
-            # just to show "listed by ..." on the card/detail page.
             "owner_name": self.owner.email.split("@")[0] if self.owner else None,
             "owner_rating": self.owner.rating if self.owner else None,
         }

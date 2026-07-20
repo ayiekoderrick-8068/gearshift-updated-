@@ -1,12 +1,4 @@
-"""
-Booking model - Person C.
 
-The transactional core of the app - links a renter (User) to a Vehicle for
-a date range. Originally 10 non-PK columns; now extended with self-drive
-vs chauffeur hire and event/convoy support (weddings, funerals, corporate
-events booking multiple vehicles at once with a volume discount) - see the
-column comments below and routes/bookings.py's `create_convoy_booking`.
-"""
 from datetime import datetime
 from extensions import db
 
@@ -19,50 +11,37 @@ class Booking(db.Model):
     start_date = db.Column(db.Date, nullable=False)
     end_date = db.Column(db.Date, nullable=False)
     total_price = db.Column(db.Float, nullable=False)
-
-    # pending -> confirmed/cancelled -> active -> completed
     status = db.Column(db.String(20), nullable=False, default="pending")
 
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     notes = db.Column(db.Text, nullable=True)
-    # 1-5 star rating left by the renter after a completed booking.
+   
     review_rating = db.Column(db.Integer, nullable=True)
 
     vehicle_id = db.Column(db.Integer, db.ForeignKey("vehicles.id"), nullable=False)
     renter_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
 
-    # Contact number for THIS booking specifically (may differ from the
-    # renter's account - e.g. booking on behalf of a family member for a
-    # funeral). Validated both client-side and in routes/bookings.py
-    # against ^\+254\d{9}$ - Kenyan format, +254 followed by exactly 9 digits.
     contact_phone = db.Column(db.String(20), nullable=False)
 
-    # --- Self-drive vs chauffeur-driven hire ---------------------------
-    # "self_drive" (default) or "chauffeur". driver_id is only set when
-    # hire_type is "chauffeur" - see routes/bookings.py for the price calc
-    # (driver's daily_rate gets added on top of the vehicle's daily_rate).
     hire_type = db.Column(db.String(20), nullable=False, default="self_drive")
     driver_id = db.Column(db.Integer, db.ForeignKey("drivers.id"), nullable=True)
-    # Set to "pending" the moment a driver_id is assigned (booking creation
-    # or later re-assignment), then "accepted" or "declined" once the
-    # driver responds from their own portal (see routes/drivers.py's
-    # PUT /driver/bookings/<id>). Null when there's no driver on this
-    # booking at all (self-drive).
+   
     driver_status = db.Column(db.String(20), nullable=True)
 
-    # --- Event / convoy bookings ----------------------------------------
-    # A wedding, funeral, or corporate event can book several vehicles at
-    # once as one "convoy" - each vehicle still gets its own Booking row
-    # (so all the normal per-vehicle logic - conflicts, owner confirm,
-    # reviews - keeps working unmodified), but they share a convoy_id so
-    # the frontend can group them together and show one combined summary.
-    event_type = db.Column(db.String(20), nullable=True)  # "wedding" / "funeral" / "safari" / "group_transportation" / "other"
+    event_type = db.Column(db.String(20), nullable=True)  # "wedding" / "funeral" / "safari" / "group_transportation" / "international_traveller" / "other"
     is_convoy = db.Column(db.Boolean, nullable=False, default=False)
     convoy_id = db.Column(db.String(36), nullable=True, index=True)
-    # Percentage discount applied to this booking's total_price for being
-    # part of a convoy (0 for a normal single-vehicle booking). Tiered by
-    # how many vehicles were booked together - see routes/bookings.py.
+
     discount_percent = db.Column(db.Float, nullable=False, default=0.0)
+
+    # International traveller event bookings only - which service within
+    # that event type (airport pickup, hotel transfer, multi-day rental,
+    # ...), see VALID_TRAVELLER_SERVICES in routes/bookings.py.
+    traveller_service = db.Column(db.String(30), nullable=True)
+    flight_number = db.Column(db.String(20), nullable=True)
+    pickup_location = db.Column(db.String(120), nullable=True)
+    dropoff_location = db.Column(db.String(120), nullable=True)
+    meet_and_greet = db.Column(db.Boolean, nullable=False, default=False)
 
     def to_dict(self):
         return {
@@ -84,8 +63,11 @@ class Booking(db.Model):
             "is_convoy": self.is_convoy,
             "convoy_id": self.convoy_id,
             "discount_percent": self.discount_percent,
-            # Nested vehicle/renter/driver summary so the booking cards on
-            # the frontend don't need extra round trips (avoids N+1 fetches).
+            "traveller_service": self.traveller_service,
+            "flight_number": self.flight_number,
+            "pickup_location": self.pickup_location,
+            "dropoff_location": self.dropoff_location,
+            "meet_and_greet": self.meet_and_greet,
             "vehicle_make": self.vehicle.make if self.vehicle else None,
             "vehicle_model": self.vehicle.model if self.vehicle else None,
             "vehicle_image": self.vehicle.image_url if self.vehicle else None,

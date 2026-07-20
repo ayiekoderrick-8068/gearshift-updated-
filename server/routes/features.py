@@ -19,8 +19,6 @@ def list_features():
 @features_bp.route("/features", methods=["POST"])
 @jwt_required
 def create_feature():
-    # Any logged-in user can suggest a new feature (e.g. an owner listing a
-    # car with an amenity that isn't in the list yet).
     data = request.get_json() or {}
     if not data.get("name"):
         return jsonify({"error": "name is required"}), 400

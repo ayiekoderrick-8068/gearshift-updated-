@@ -1,28 +1,4 @@
-"""
-Seed script - Person B (vehicles/features), with admin + client users from
-Person A's model. Run with:
 
-    pipenv run python seed.py
-
-This WIPES the database and refills it with fresh demo data every time you
-run it - handy for resetting to a known state while testing in Postman or
-demoing to the team.
-
-Fleet size / images
---------------------
-MODEL_CATALOG below holds one entry per distinct make+model (25 of them,
-spanning 9 categories - SUV, Sedan, Truck, Van, Convertible, Limousine,
-Hearse, Safari, and Bus). `build_fleet()` then repeats that catalog with
-varied year/rate/city/owner combinations to produce a ~50 vehicle fleet,
-the way a real listings site reuses the same handful of stock photos
-across many individual postings of the same model. 25 divides evenly into
-50, so every model shows up exactly twice.
-
-image_url points at a real photo of that exact make/model via Wikimedia
-Commons' Special:FilePath redirect (a stable, official hotlinking mechanism -
-not a random placeholder). If you want to swap any of these for your own
-photos later, this is the only place you need to edit.
-"""
 from app import create_app
 from extensions import db, bcrypt
 from models import User, Vehicle, Feature, Driver
@@ -52,20 +28,6 @@ def _commons(filename, width=800):
     the way a random image-search result might."""
     return f"https://commons.wikimedia.org/wiki/Special:FilePath/{filename}?width={width}"
 
-
-# (make, model, category, base_daily_rate, Commons filename, fuel_type, transmission, drive)
-#
-# Limousine and Hearse are listed FIRST on purpose: build_fleet() below
-# cycles through this catalog to reach ~50 listings, and putting these two
-# at the front guarantees they show up in every pass (so the event/convoy
-# booking page - which needs several limos and hearses to pick from - always
-# has options, regardless of exactly where target_size lands).
-#
-# fuel_type/transmission/drive reflect how that real make+model is actually
-# specced (e.g. Kenyan-market pickups/Land Cruisers are predominantly diesel
-# and 4WD, hatchbacks are predominantly manual FWD) - not randomised, so the
-# Search Options filters (Fuel type/Transmission/Drive) return results that
-# make sense together.
 MODEL_CATALOG = [
     ("Lincoln", "Town Car Limousine", "Limousine", 25000, "Lincoln_Town_Car_Limousine.jpg", "Petrol", "Automatic", "RWD"),
     ("Rolls-Royce", "Funeral Hearse", "Hearse", 20000, "Rolls_Royce_Funeral_Hearse_(1).jpg", "Petrol", "Automatic", "RWD"),
@@ -86,14 +48,11 @@ MODEL_CATALOG = [
     ("BMW", "4 Series", "Convertible", 8500, "BMW_4_Series.jpg", "Petrol", "Automatic", "RWD"),
     ("Porsche", "911", "Convertible", 18000, "Porsche_911_Turbo.jpg", "Petrol", "Automatic", "AWD"),
     ("Bentley", "Continental GT", "Convertible", 22000, "Bentley_Continental_GT_(front).jpg", "Petrol", "Automatic", "AWD"),
-    # Safari - three different Land Cruiser trims at three different price
-    # points, per the brief: "different variety of those cars with
-    # different prices" for tourists heading to parks/game reserves.
+
     ("Toyota", "Land Cruiser 70", "Safari", 8000, "Toyota_Land_Cruiser_Prado_70_002.JPG", "Diesel", "Manual", "4WD"),
     ("Toyota", "Land Cruiser Prado", "Safari", 11000, "Toyota_Land_Cruiser_Prado_120_003.JPG", "Diesel", "Automatic", "4WD"),
     ("Toyota", "Land Cruiser 200", "Safari", 16000, "Toyota_Land_Cruiser_200_002.JPG", "Diesel", "Automatic", "4WD"),
-    # Bus - group transportation (school/company/tour groups), also a
-    # dedicated category alongside the existing Van models.
+
     ("Toyota", "Coaster Shuttle", "Bus", 9000, "Toyota_Coaster_012.JPG", "Diesel", "Manual", "RWD"),
     ("Toyota", "Coaster", "Bus", 12000, "Toyota_Coaster_Mini_Bus_2015.jpg", "Diesel", "Manual", "RWD"),
     ("Scania", "Touring Coach", "Bus", 20000, "KAUTRA_Scania_Touring_bus_in_Bergen.jpg", "Diesel", "Manual", "RWD"),
@@ -101,11 +60,6 @@ MODEL_CATALOG = [
 
 EXTERIOR_COLORS = ["White", "Black", "Silver", "Grey", "Blue", "Red", "Green", "Beige"]
 
-# Category-level marketing copy - written to actually sell the car rather
-# than repeat one bland sentence for every listing. Falls back to this by
-# category; a handful of standout makes get their own punchier override
-# below (DESCRIPTION_OVERRIDES) so the halo cars in the fleet read as premium
-# rather than generic.
 DESCRIPTION_TEMPLATES = {
     "SUV": (
         "This {year} {make} {model} blends commanding road presence with "
@@ -174,14 +128,6 @@ DESCRIPTION_OVERRIDES = {
     ),
 }
 
-
-# (name, rating, daily_rate, phone, license_number, bio, email) - daily_rate
-# scales with rating on purpose ("the higher the rating, the more expensive
-# the driver" per the brief), but set explicitly rather than computed from a
-# formula so an admin can hand-tune one driver's rate later without it
-# snapping back. Every driver here also gets a portal login (email +
-# password "driver123" for all of them, for a predictable demo) - see
-# POST /driver-login and pages/DriverPortal.jsx.
 DRIVER_DATA = [
     ("Grace Wanjiru", 5.0, 6000, "+254712000001", "DL-D10001", "20 years chauffeuring diplomats and wedding parties.", "driver1@gearshift.com"),
     ("James Mwangi", 4.9, 5800, "+254712000002", "DL-D10002", "Former corporate driver, specialises in executive transfers.", "driver2@gearshift.com"),
@@ -205,20 +151,12 @@ def build_fleet(target_size=50):
         make, model, category, base_rate, filename, fuel_type, transmission, drive = MODEL_CATALOG[i % len(MODEL_CATALOG)]
         repeat_index = i // len(MODEL_CATALOG)  # 0 on first pass, 1 on second, ...
 
-        year = 2024 - repeat_index - (i % 4)  # spreads years across 2018-2024ish
-        # +/- small rate variance per repeat so identical models aren't
-        # priced identically every time (looks more like real listings).
+        year = 2024 - repeat_index - (i % 4) 
         rate = base_rate + (repeat_index * 150) - ((i % 3) * 100)
 
         template = DESCRIPTION_OVERRIDES.get(model, DESCRIPTION_TEMPLATES[category])
         description = template.format(year=year, make=make, model=model)
 
-        # Every 6th listing is a dealer-fresh "New" car with near-zero
-        # mileage; the rest scale mileage with age. Deriving condition
-        # from age alone would make it permanently empty in this catalog
-        # (the newest model year is 2024, already a couple of years old),
-        # so a fixed slice of the fleet is New regardless of year - same as
-        # a real lot always keeping a few brand-new units in stock.
         if i % 6 == 0:
             condition = "New"
             mileage = (i * 137) % 3000
@@ -261,10 +199,6 @@ def run():
             role="admin",
             verification_status="verified",
         )
-        # One dedicated owner account - lists every vehicle in the fleet.
-        # Kept separate from the renter accounts below so "Owner" and
-        # "Client" are two clearly distinct demo logins rather than the
-        # same accounts wearing both hats.
         owner = User(
             email="owner@gearshift.com",
             password_hash=bcrypt.generate_password_hash("owner123").decode("utf-8"),
@@ -273,7 +207,7 @@ def run():
             license_number="DL-OWN001",
             verification_status="verified",
         )
-        # Three renter-only client accounts.
+    
         client1 = User(
             email="client1@gearshift.com",
             password_hash=bcrypt.generate_password_hash("client123").decode("utf-8"),
@@ -322,9 +256,6 @@ def run():
         db.session.commit()
 
         print("Seeding vehicles...")
-        # Every vehicle belongs to the one dedicated `owner` account (see
-        # above) - keeps the demo logins clean: Owner lists cars, Client 1-3
-        # rent them, nobody has to wonder which hat an account is wearing.
         owners = [owner]
         fleet = build_fleet(target_size=50)
         for i, data in enumerate(fleet):
@@ -347,8 +278,6 @@ def run():
                 is_approved=True,
                 is_available=True,
             )
-            # Assign 3-5 features per vehicle, cycling through the list so
-            # every vehicle gets a different mix.
             start = i % len(features)
             count = 3 + (i % 3)  # 3, 4 or 5 features
             picked = [features[(start + j) % len(features)] for j in range(count)]

@@ -81,18 +81,18 @@ You'll see `Running on http://127.0.0.1:5000`. Leave this terminal running - ope
 
 **Don't want to type `pipenv run` every time?** Run `pipenv shell` once - it drops you into a sub-shell with the environment already active (your prompt changes to show it), and from then on you just type `python seed.py` / `python app.py` like normal. Type `exit` to leave that sub-shell when you're done.
 
-### ⚠️ Mac-specific: port 5000 conflict
+### Mac-specific: port 5000 conflict
 
 On macOS Monterey and later, **AirPlay Receiver** listens on port 5000 by default, which can clash with Flask's default port and cause a confusing `Address already in use` error or requests silently going nowhere. Two options:
 
-- **Turn AirPlay Receiver off** (recommended if you're not using it): System Settings → General → AirDrop & Handoff → turn off "AirPlay Receiver".
+- **Turn AirPlay Receiver off** (recommended if you're not using it): System Settings -> General -> AirDrop & Handoff -> turn off "AirPlay Receiver".
 - **Or run Flask on a different port**, e.g. 5555: change the last line of `server/app.py` from `app.run(debug=True, port=5000)` to `app.run(debug=True, port=5555)`, then update `client/.env`'s `VITE_API_URL` to `http://127.0.0.1:5555` and `server/.env`'s `CORS_ORIGINS` stays the same (it's about the frontend's origin, not the backend's port).
 
 Either way, whatever port you land on, that's the URL Postman and the frontend both need to point at.
 
-### ⚠️ Mac-specific: "Access to localhost was denied" (HTTP ERROR 403)
+### Mac-specific: "Access to localhost was denied" (HTTP ERROR 403)
 
-If your browser shows a branded "Access to localhost was denied" page (not a Flask error - Flask never looks like this) the moment anything tries to reach `localhost:5000`, it's almost always **Screen Time's content filter** (System Settings → Screen Time → Content & Privacy Restrictions → Content Restrictions → Web Content). It runs system-wide across every browser, not just Safari, and blocks by hostname - so `localhost` gets checked and blocked, while a raw IP like `127.0.0.1` sails through untouched since there's no hostname to filter.
+If your browser shows a branded "Access to localhost was denied" page (not a Flask error - Flask never looks like this) the moment anything tries to reach `localhost:5000`, it's almost always **Screen Time's content filter** (System Settings -> Screen Time -> Content & Privacy Restrictions -> Content Restrictions -> Web Content). It runs system-wide across every browser, not just Safari, and blocks by hostname - so `localhost` gets checked and blocked, while a raw IP like `127.0.0.1` sails through untouched since there's no hostname to filter.
 
 This project's defaults already use `127.0.0.1` instead of `localhost` everywhere (`client/.env.example`, `server/.env.example`) specifically to dodge this. Just make sure you also **open the frontend itself at `http://127.0.0.1:5173`**, not `http://localhost:5173` - if the page itself loads from the `localhost` address, you're not actually avoiding the block.
 
@@ -125,7 +125,7 @@ Vite will print `http://localhost:5173` - open `http://127.0.0.1:5173` instead (
 
 **Register**
 - `POST {{base_url}}/register`
-- Body → raw → JSON:
+- Body -> raw -> JSON:
 ```json
 { "email": "test@example.com", "password": "test1234", "role": "client" }
 ```
@@ -144,13 +144,13 @@ Now every future request can use `{{token}}` without copy-pasting it manually.
 
 **Get my profile (protected)**
 - `GET {{base_url}}/me`
-- Headers → `Authorization: Bearer {{token}}`
+- Headers -> `Authorization: Bearer {{token}}`
 - If you get `{"error": "Unauthorized"}`, your token is missing/expired - log in again.
 
 **Test admin_required blocks non-admins**
 - Log in as `client1@gearshift.com` / `client123`, save that token.
-- `GET {{base_url}}/admin/stats` with `Authorization: Bearer {{token}}` → should return `403 Forbidden`.
-- Log in as `admin@gearshift.com` / `admin123` instead → same request should return `200` with stats.
+- `GET {{base_url}}/admin/stats` with `Authorization: Bearer {{token}}` -> should return `403 Forbidden`.
+- Log in as `admin@gearshift.com` / `admin123` instead -> same request should return `200` with stats.
 
 This is exactly the check called out in the project brief: **test both `@jwt_required` and `@admin_required` in Postman before building anything that depends on them.** If either of those two checks above doesn't behave as described, fix `server/utils/decorators.py` first - everything else in the app depends on it.
 
@@ -210,5 +210,5 @@ cd client && npm run dev
 | `pipenv: command not found` | Close and reopen your terminal after installing it, or run it as `python3 -m pipenv install` instead |
 | CORS error in the browser console | Make sure `server/.env`'s `CORS_ORIGINS` matches the URL your frontend is actually running on (check the `npm run dev` output) |
 | `401 Unauthorized` on a route that should work | Token missing/expired - log in again in Postman/the app; tokens last 7 days |
-| Frontend shows no vehicles, login/signup fail with a generic message | Usually not a code bug - open DevTools → Network tab and look at the actual failed request. Did you run `pipenv run python seed.py`? Does `client/.env`'s `VITE_API_URL` match your backend's actual port and use `127.0.0.1`? |
+| Frontend shows no vehicles, login/signup fail with a generic message | Usually not a code bug - open DevTools -> Network tab and look at the actual failed request. Did you run `pipenv run python seed.py`? Does `client/.env`'s `VITE_API_URL` match your backend's actual port and use `127.0.0.1`? |
 | `pipenv install` fails compiling a package | Run `xcode-select --install` in Terminal, then retry. If it's specifically `psycopg2-binary` or `gunicorn` failing - you shouldn't be installing those locally at all, they're deploy-only (see section 5) |

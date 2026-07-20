@@ -39,14 +39,9 @@ def register():
     if User.query.filter_by(email=email).first():
         return jsonify({"error": "An account with that email already exists"}), 409
 
-    # Only allow "client" or "admin" to be set explicitly - default to
-    # client for anything unexpected so nobody can self-promote by sending
-    # role: "admin" in the signup form.
     if role not in ("client", "admin"):
         role = "client"
 
-    # rental_intent is just a UI preference (which nav links a client sees)
-    # - same defensive validation pattern as role above.
     if rental_intent not in ("renter", "owner", "both"):
         rental_intent = "both"
 
@@ -88,8 +83,6 @@ def update_me():
     data = request.get_json() or {}
     user = g.current_user
 
-    # Only these fields are editable from the profile page - role/rating/
-    # is_banned etc are intentionally NOT here, those are admin-only.
     if "license_number" in data:
         user.license_number = data["license_number"]
     if "rental_intent" in data and data["rental_intent"] in ("renter", "owner", "both"):
@@ -111,8 +104,6 @@ def request_reset():
     email = (data.get("email") or "").strip().lower()
     user = User.query.filter_by(email=email).first()
 
-    # Deliberately return the same response whether or not the email exists,
-    # so this endpoint can't be used to check which emails are registered.
     if not user:
         return jsonify({"message": "If that email exists, a reset token was generated"}), 200
 
@@ -121,9 +112,6 @@ def request_reset():
     user.reset_token_expiry = datetime.utcnow() + timedelta(hours=1)
     db.session.commit()
 
-    # NOTE: for this school project we return the token directly instead of
-    # emailing it (no email service configured). In production this token
-    # would be sent via email, never returned in the API response.
     return jsonify({"message": "Reset token generated", "reset_token": token}), 200
 
 

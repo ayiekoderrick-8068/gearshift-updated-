@@ -69,8 +69,6 @@ def delete_user(user_id):
     if not user:
         return jsonify({"error": "User not found"}), 404
 
-    # cascade="all, delete-orphan" on User.vehicles / User.bookings (see
-    # models/user.py) means this also removes their vehicles and bookings.
     db.session.delete(user)
     db.session.commit()
     return jsonify({"message": "User and their listings/bookings deleted"}), 200
@@ -86,8 +84,6 @@ def list_all_bookings():
 @admin_bp.route("/admin/vehicles", methods=["GET"])
 @admin_required
 def list_all_vehicles():
-    # Unlike the public GET /vehicles, this includes unapproved and
-    # unavailable listings - that's the point of the admin review queue.
     vehicles = Vehicle.query.order_by(Vehicle.created_at.desc()).all()
     return jsonify([v.to_dict() for v in vehicles]), 200
 

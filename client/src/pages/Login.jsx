@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import api from "../api";
 import { useAuth } from "../context/AuthContext";
-import { AUTH_BG_IMAGES } from "../constants";
+import { LOGIN_BG_IMAGE } from "../constants";
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -40,14 +40,9 @@ export default function Login() {
 
   return (
     <div className="relative min-h-[80vh] overflow-hidden">
-      {/* Background collage - one real photo per occasion GearShift
-          serves (wedding/safari/funeral/group transport), so the sign-in
-          page isn't just plain white. See AUTH_BG_IMAGES in constants.js. */}
-      <div className="absolute inset-0 grid grid-cols-2 grid-rows-2">
-        {AUTH_BG_IMAGES.map((url) => (
-          <div key={url} className="bg-cover bg-center" style={{ backgroundImage: `url(${url})` }} />
-        ))}
-      </div>
+      {/* Full-bleed moody background photo, so the sign-in page isn't just
+          plain white. See LOGIN_BG_IMAGE in constants.js. */}
+      <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: `url("${LOGIN_BG_IMAGE}")` }} />
       <div className="absolute inset-0 bg-brand-navy-dark/85" />
 
       <div className="section-wrap relative flex min-h-[80vh] items-center justify-center py-section">

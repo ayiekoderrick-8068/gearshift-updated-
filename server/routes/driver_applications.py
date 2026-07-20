@@ -31,8 +31,6 @@ def _allowed_file(filename):
 @driver_applications_bp.route("/driver-applications", methods=["POST"])
 def create_driver_application():
     # Regular form fields (not JSON - this is a multipart request because
-    # of the file upload) live on request.form; the file itself is on
-    # request.files.
     full_name = request.form.get("full_name")
     id_number = request.form.get("id_number")
     email = request.form.get("email")
@@ -51,9 +49,6 @@ def create_driver_application():
     if not _allowed_file(cv_file.filename):
         return jsonify({"error": "CV must be a PDF, DOC, or DOCX file"}), 400
 
-    # Never trust the client-supplied filename directly (path traversal
-    # risk) - secure_filename() strips it down, and we prefix a UUID so two
-    # applicants uploading "cv.pdf" don't collide or overwrite each other.
     original_name = secure_filename(cv_file.filename)
     stored_name = f"{uuid.uuid4().hex}_{original_name}"
 

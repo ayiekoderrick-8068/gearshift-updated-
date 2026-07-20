@@ -7,12 +7,13 @@ import {
   EVENT_TYPES,
   EVENT_SUGGESTED_CATEGORIES,
   EVENT_THEMES,
+  TRAVELLER_SERVICES,
   previewConvoyDiscount,
   isValidKenyanPhone,
 } from "../constants";
 
 const FALLBACK_IMG =
-  "https://images.unsplash.com/photo-1493238792000-8113da705763?auto=format&fit=crop&w=300&q=60";
+  "https://images.unsplash.com/photo-1493238792000-8113da705763?auto=format&fit=crop&w=800&q=80";
 
 // Protected route: /events/new - book several vehicles at once for a
 // wedding, funeral, safari, or group transportation event, with a volume
@@ -29,6 +30,16 @@ export default function EventBooking() {
   const [contactPhone, setContactPhone] = useState("");
   const [disclaimerAccepted, setDisclaimerAccepted] = useState(false);
   const [showAllCategories, setShowAllCategories] = useState(false);
+
+  // International traveller event type only - which service (airport
+  // pickup, hotel transfer, ...) plus the trip details that service needs.
+  // See TRAVELLER_SERVICES in constants.js for which fields each service
+  // actually shows/requires.
+  const [travellerService, setTravellerService] = useState(TRAVELLER_SERVICES[0].value);
+  const [flightNumber, setFlightNumber] = useState("");
+  const [pickupLocation, setPickupLocation] = useState("");
+  const [dropoffLocation, setDropoffLocation] = useState("");
+  const [meetAndGreet, setMeetAndGreet] = useState(false);
 
   const [vehicles, setVehicles] = useState([]);
   const [loadingVehicles, setLoadingVehicles] = useState(true);
@@ -48,10 +59,16 @@ export default function EventBooking() {
   // would be confusing (and likely the wrong kind of vehicle anyway).
   useEffect(() => {
     setSelections({});
+    setTravellerService(TRAVELLER_SERVICES[0].value);
+    setFlightNumber("");
+    setPickupLocation("");
+    setDropoffLocation("");
+    setMeetAndGreet(false);
   }, [eventType]);
 
   const theme = EVENT_THEMES[eventType] || EVENT_THEMES.other;
   const suggestedCategories = EVENT_SUGGESTED_CATEGORIES[eventType] || [];
+  const selectedService = TRAVELLER_SERVICES.find((s) => s.value === travellerService) || TRAVELLER_SERVICES[0];
 
   // Strict filter by default (only the categories suggested for this event
   // type) - "Browse all categories" is the escape hatch. Within the
@@ -132,6 +149,16 @@ export default function EventBooking() {
       setError("You must accept the damage liability disclaimer to continue.");
       return;
     }
+    if (eventType === "international_traveller") {
+      if (selectedService.fields.pickupLocation && !pickupLocation.trim()) {
+        setError("Enter a pickup location.");
+        return;
+      }
+      if (selectedService.fields.dropoffLocation && !dropoffLocation.trim()) {
+        setError("Enter a drop-off location.");
+        return;
+      }
+    }
     for (const v of selectedVehicles) {
       if (selections[v.id].hireType === "chauffeur" && !selections[v.id].driverId) {
         setError(`Choose a driver for the ${v.make} ${v.model}, or switch it to self-drive.`);
@@ -147,6 +174,13 @@ export default function EventBooking() {
         end_date: endDate,
         notes,
         contact_phone: contactPhone,
+        ...(eventType === "international_traveller" && {
+          traveller_service: travellerService,
+          flight_number: flightNumber || null,
+          pickup_location: pickupLocation || null,
+          dropoff_location: dropoffLocation || null,
+          meet_and_greet: meetAndGreet,
+        }),
         vehicles: selectedVehicles.map((v) => ({
           vehicle_id: v.id,
           hire_type: selections[v.id].hireType,
@@ -171,12 +205,11 @@ export default function EventBooking() {
           the photo like a booking widget. */}
       <div
         className="relative overflow-hidden bg-cover"
-        style={{ backgroundImage: `url(${theme.bgImage})`, backgroundPosition: theme.bgPosition || "center" }}
+        style={{ backgroundImage: `url("${theme.bgImage}")`, backgroundPosition: theme.bgPosition || "center" }}
       >
         <div className={`absolute inset-0 ${theme.gradient}`} />
 
         <div className={`section-wrap relative py-section-lg ${theme.textClass}`}>
-          <p className="text-5xl">{theme.emoji}</p>
           <h1 className="mt-2 max-w-xl text-3xl sm:text-4xl">{theme.heading}</h1>
           <p className="mt-2 max-w-lg opacity-90">{theme.body}</p>
 
@@ -199,6 +232,73 @@ export default function EventBooking() {
                 </button>
               ))}
             </div>
+
+            {eventType === "international_traveller" && (
+              <div className="mb-gutter">
+                <label className="mb-1 block text-sm font-medium">Service</label>
+                <select
+                  value={travellerService}
+                  onChange={(e) => setTravellerService(e.target.value)}
+                  className="input-field"
+                >
+                  {TRAVELLER_SERVICES.map((s) => (
+                    <option key={s.value} value={s.value}>{s.label}</option>
+                  ))}
+                </select>
+                <p className="mt-1 text-xs text-brand-navy/50">{selectedService.description}</p>
+
+                <div className="mt-gutter grid gap-gutter sm:grid-cols-2">
+                  {selectedService.fields.pickupLocation && (
+                    <div>
+                      <label className="mb-1 block text-sm font-medium">Pickup location</label>
+                      <input
+                        type="text"
+                        required
+                        value={pickupLocation}
+                        onChange={(e) => setPickupLocation(e.target.value)}
+                        placeholder="e.g. Sarova Stanley Hotel, Nairobi"
+                        className="input-field"
+                      />
+                    </div>
+                  )}
+                  {selectedService.fields.dropoffLocation && (
+                    <div>
+                      <label className="mb-1 block text-sm font-medium">Drop-off location</label>
+                      <input
+                        type="text"
+                        required
+                        value={dropoffLocation}
+                        onChange={(e) => setDropoffLocation(e.target.value)}
+                        placeholder="e.g. JKIA Terminal 1A"
+                        className="input-field"
+                      />
+                    </div>
+                  )}
+                  {selectedService.fields.flightNumber && (
+                    <div>
+                      <label className="mb-1 block text-sm font-medium">Flight number (optional)</label>
+                      <input
+                        type="text"
+                        value={flightNumber}
+                        onChange={(e) => setFlightNumber(e.target.value)}
+                        placeholder="e.g. KQ100"
+                        className="input-field"
+                      />
+                    </div>
+                  )}
+                  {selectedService.fields.meetAndGreet && (
+                    <label className="flex items-center gap-2 self-end pb-2 text-sm">
+                      <input
+                        type="checkbox"
+                        checked={meetAndGreet}
+                        onChange={(e) => setMeetAndGreet(e.target.checked)}
+                      />
+                      Meet &amp; greet at arrivals
+                    </label>
+                  )}
+                </div>
+              </div>
+            )}
 
             <div className="grid gap-gutter sm:grid-cols-2">
               <div>
@@ -232,21 +332,18 @@ export default function EventBooking() {
       <div className="border-b border-brand-navy/10 bg-surface">
         <div className="section-wrap grid gap-gutter py-gutter-lg sm:grid-cols-3">
           <div className="flex items-start gap-3">
-            <span className="text-2xl">🏷️</span>
             <div>
               <p className="font-semibold">Bulk booking discount</p>
               <p className="text-sm text-brand-navy/60">The more you book, the more you save.</p>
             </div>
           </div>
           <div className="flex items-start gap-3">
-            <span className="text-2xl">🛡️</span>
             <div>
               <p className="font-semibold">Verified &amp; insured cars</p>
               <p className="text-sm text-brand-navy/60">Safe, reliable and chauffeur-driven.</p>
             </div>
           </div>
           <div className="flex items-start gap-3">
-            <span className="text-2xl">🎧</span>
             <div>
               <p className="font-semibold">Support</p>
               <p className="text-sm text-brand-navy/60">We're here to help you 24/7.</p>
@@ -298,7 +395,7 @@ export default function EventBooking() {
                       <img
                         src={v.image_url || FALLBACK_IMG}
                         alt=""
-                        className="h-14 w-20 rounded-md object-cover"
+                        className="h-28 w-40 flex-shrink-0 rounded-md object-cover"
                         onError={(e) => { e.currentTarget.src = FALLBACK_IMG; }}
                       />
                       <div className="flex-1">

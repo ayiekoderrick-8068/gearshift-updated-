@@ -1,10 +1,4 @@
-"""
-Feature model - Person B.
 
-A "feature" is something like GPS, Bluetooth, AWD - a car amenity that can
-be attached to many vehicles (and a vehicle can have many features). See
-vehicle_feature.py for the join table that makes this many-to-many.
-"""
 from extensions import db
 
 

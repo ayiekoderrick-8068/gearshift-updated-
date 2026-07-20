@@ -45,6 +45,8 @@ const DriverLogin = lazy(() => import("./pages/DriverLogin"));
 const DriverPortal = lazy(() => import("./pages/DriverPortal"));
 const About = lazy(() => import("./pages/About"));
 const Contact = lazy(() => import("./pages/Contact"));
+const FAQ = lazy(() => import("./pages/FAQ"));
+const AdminContactMessages = lazy(() => import("./pages/AdminContactMessages"));
 const Terms = lazy(() => import("./pages/Terms"));
 const DataProtection = lazy(() => import("./pages/DataProtection"));
 const NotFound = lazy(() => import("./pages/NotFound"));
@@ -84,6 +86,7 @@ export default function App() {
             <Route path="/reset-password" element={<ResetPassword />} />
             <Route path="/about" element={<About />} />
             <Route path="/contact" element={<Contact />} />
+            <Route path="/faq" element={<FAQ />} />
             <Route path="/terms" element={<Terms />} />
             <Route path="/data-protection" element={<DataProtection />} />
             <Route path="/become-a-driver" element={<BecomeDriver />} />
@@ -109,6 +112,7 @@ export default function App() {
             <Route path="/admin/vehicles" element={<ProtectedRoute requiredRole="admin"><AdminVehicles /></ProtectedRoute>} />
             <Route path="/admin/bookings" element={<ProtectedRoute requiredRole="admin"><AdminBookings /></ProtectedRoute>} />
             <Route path="/admin/driver-applications" element={<ProtectedRoute requiredRole="admin"><AdminDriverApplications /></ProtectedRoute>} />
+            <Route path="/admin/contact-messages" element={<ProtectedRoute requiredRole="admin"><AdminContactMessages /></ProtectedRoute>} />
 
             {/* Catch-all */}
             <Route path="*" element={<NotFound />} />

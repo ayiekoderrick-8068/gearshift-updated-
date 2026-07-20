@@ -41,7 +41,7 @@ export default function VehicleCard({ vehicle }) {
             isComparing ? "bg-accent text-white" : "bg-white/90 text-brand-navy hover:bg-white"
           } ${compareFull ? "cursor-not-allowed opacity-50" : ""}`}
         >
-          {isComparing ? "✓ Comparing" : "+ Compare"}
+          {isComparing ? "Comparing" : "+ Compare"}
         </button>
       </div>
 
@@ -56,7 +56,7 @@ export default function VehicleCard({ vehicle }) {
         </div>
 
         <p className="flex items-center gap-1 text-sm text-brand-navy/60">
-          <span aria-hidden="true">📍</span> {vehicle.location}
+          {vehicle.location}
         </p>
 
         {vehicle.features?.length > 0 && (

@@ -12,9 +12,6 @@ vehicles_bp = Blueprint("vehicles", __name__)
 
 @vehicles_bp.route("/vehicles", methods=["GET"])
 def list_vehicles():
-    # Public browse endpoint only shows listings that are both approved by
-    # an admin AND currently available - unapproved/unavailable cars are
-    # only visible on the admin vehicles table (GET /admin/vehicles).
     query = Vehicle.query.filter_by(is_approved=True, is_available=True)
 
     location = request.args.get("location")
@@ -33,7 +30,6 @@ def list_vehicles():
     if max_rate:
         query = query.filter(Vehicle.daily_rate <= float(max_rate))
 
-    # Search Options panel filters (see SearchFilter.jsx).
     condition = request.args.get("condition")
     if condition:
         query = query.filter(Vehicle.condition == condition)
@@ -82,6 +78,21 @@ def list_vehicles():
         )
 
     vehicles = query.order_by(Vehicle.created_at.desc()).all()
+    return jsonify([v.to_dict() for v in vehicles]), 200
+
+
+@vehicles_bp.route("/vehicles/mine", methods=["GET"])
+@jwt_required
+def my_vehicles():
+    # Every listing the current user owns, regardless of approval/
+    # availability status - unlike the public list above (which only shows
+    # approved + available cars), an owner needs to see their own pending
+    # and currently-unavailable listings too.
+    vehicles = (
+        Vehicle.query.filter_by(owner_id=g.current_user.id)
+        .order_by(Vehicle.created_at.desc())
+        .all()
+    )
     return jsonify([v.to_dict() for v in vehicles]), 200
 
 

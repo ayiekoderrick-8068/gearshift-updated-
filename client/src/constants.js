@@ -85,7 +85,59 @@ export const EVENT_TYPES = [
   { value: "funeral", label: "Funeral" },
   { value: "safari", label: "Safari" },
   { value: "group_transportation", label: "Group transportation" },
+  { value: "international_traveller", label: "International Traveller" },
   { value: "other", label: "Other" },
+];
+
+// Sub-services offered under the "international_traveller" event type -
+// EventBooking.jsx shows this as a second picker once that event type is
+// selected, and shows/requires the pickup/drop-off/flight-number/meet-and-
+// greet fields below according to each service's `fields` flags. Mirrored
+// server-side by VALID_TRAVELLER_SERVICES in server/routes/bookings.py,
+// which is the authoritative allowlist - this is just what drives the UI.
+export const TRAVELLER_SERVICES = [
+  {
+    value: "airport_pickup",
+    label: "Airport Pickup",
+    description: "Be picked up from the airport and taken to your destination.",
+    fields: { pickupLocation: false, dropoffLocation: true, flightNumber: true, meetAndGreet: true },
+  },
+  {
+    value: "airport_dropoff",
+    label: "Airport Drop-off",
+    description: "Transport from your location to the airport.",
+    fields: { pickupLocation: true, dropoffLocation: false, flightNumber: true, meetAndGreet: false },
+  },
+  {
+    value: "round_trip",
+    label: "Round-Trip Airport Transfer",
+    description: "Book both an airport pickup and a return airport drop-off together.",
+    fields: { pickupLocation: true, dropoffLocation: true, flightNumber: true, meetAndGreet: true },
+  },
+  {
+    value: "hotel_transfer",
+    label: "Hotel & Accommodation Transfer",
+    description: "Airport to hotel, or hotel to airport.",
+    fields: { pickupLocation: true, dropoffLocation: true, flightNumber: true, meetAndGreet: true },
+  },
+  {
+    value: "tourist_transfer",
+    label: "Tourist Destination Transfer",
+    description: "Transfers to destinations such as Maasai Mara, Diani, Amboseli and more.",
+    fields: { pickupLocation: true, dropoffLocation: true, flightNumber: false, meetAndGreet: false },
+  },
+  {
+    value: "multi_day_driver",
+    label: "Multi-Day Rental with Driver",
+    description: "A vehicle and driver for several days of touring around the country.",
+    fields: { pickupLocation: true, dropoffLocation: false, flightNumber: false, meetAndGreet: false },
+  },
+  {
+    value: "multi_destination",
+    label: "Multiple Destination Booking",
+    description: "Airport, hotel, tourist attraction, hotel - list your stops in order in the notes below.",
+    fields: { pickupLocation: true, dropoffLocation: true, flightNumber: false, meetAndGreet: false },
+  },
 ];
 
 // Which vehicle categories to show for each event type, IN PRIORITY ORDER -
@@ -101,6 +153,7 @@ export const EVENT_SUGGESTED_CATEGORIES = {
   funeral: ["Hearse", "SUV", "Sedan", "Van"],
   safari: ["Safari", "SUV"],
   group_transportation: ["Bus", "Van"],
+  international_traveller: ["Sedan", "SUV", "Van", "Limousine"],
   other: ["SUV", "Sedan", "Van", "Limousine", "Convertible", "Safari", "Bus", "Hearse", "Truck"],
 };
 
@@ -118,40 +171,35 @@ function commonsUrl(filename, width = 1600) {
 
 export const EVENT_THEMES = {
   wedding: {
-    // A real multi-car wedding convoy (ribbon-decorated cars driving in a
-    // line) - a genuine convoy rather than a single vehicle, at the cost of
-    // the cars themselves being ordinary rather than premium (no
-    // free-licensed photo of several luxury cars in convoy formation
-    // exists on Wikimedia Commons - verified by extensive search).
-    bgImage: commonsUrl("A_wedding_convoy_in_Sivas_Province.jpg"),
-    // The convoy sits low and left-of-centre in the source photo (the top
-    // half is just sky/rooftops) - default "center" cropping cuts the lead
-    // car off, so this pins the crop to where the cars actually are. Nudged
-    // right from 30% so the trailing cars in the queue stay in frame on
-    // narrow/tall viewports too, not just the lead car.
-    bgPosition: "38% 88%",
+    // A decorated Lincoln Town Car limousine - matches the actual
+    // "Lincoln Town Car Limousine" listing in the fleet (see
+    // VEHICLE_MAKE_MODELS below / server/seed.py's MODEL_CATALOG), unlike
+    // the previous ordinary-hatchback convoy photo. No bystanders in frame.
+    bgImage: commonsUrl("Wedding_car_centrum_Fier_Albania_2018_1.jpg"),
+    // The car's decorated front end (flowers, grille) sits right-of-centre
+    // in the source photo, with the stretched body trailing off to the
+    // left - this keeps that front end in frame and on the right side of
+    // the banner, where the gradient below is transparent enough to
+    // actually see it (the left side is where it darkens for the text).
+    bgPosition: "80% 55%",
     gradient: "bg-gradient-to-r from-rose-950/90 via-rose-900/60 to-transparent",
     textClass: "text-white",
-    emoji: "💍",
     heading: "Plan your wedding convoy",
     body: "Limousines and premium cars for the bridal party, with a discount the more you book together.",
   },
   funeral: {
-    // A real funeral motorcade (multiple vehicles following the lead car).
-    // Note: the lead vehicle's memorial wreath includes a photo of the
-    // actual deceased person - kept per explicit request, but flagged here
-    // since it's a real person's funeral, not a staged/generic photo.
-    bgImage: commonsUrl("Tenom_Sabah_Funeral-motorcade-01.jpg"),
-    // Pulls the crop down off the sky/hillside and onto the motorcade
-    // itself, which fills the lower two-thirds of the source photo. Shifted
-    // further right than a naive center/45% would suggest - on narrow/tall
-    // viewports the lead van's cab was filling the whole frame with none of
-    // the trailing convoy visible, so this favors the vehicles queued
-    // behind it over the lead van alone.
-    bgPosition: "75% 70%",
+    // A Lincoln Town Car hearse on the highway - dignified and generic
+    // (no identifiable deceased person, no crowd of mourners), replacing an
+    // earlier photo whose memorial wreath included a real photo of the
+    // actual deceased.
+    bgImage: commonsUrl("Lincoln_Town_Car_Hearse_(5356078140).jpg"),
+    // The hearse sits right-of-centre in the source photo, with open road
+    // and a sound-barrier wall trailing off to the left - this keeps the
+    // hearse itself on the right side of the banner, where the gradient
+    // below is transparent enough to actually see it.
+    bgPosition: "78% 62%",
     gradient: "bg-gradient-to-r from-slate-950/90 via-slate-900/65 to-transparent",
     textClass: "text-white",
-    emoji: "🕊️",
     heading: "Arrange a funeral convoy",
     body: "A dignified hearse and accompanying vehicles, with experienced chauffeurs available.",
   },
@@ -164,7 +212,6 @@ export const EVENT_THEMES = {
     bgImage: commonsUrl("Loxodonta_africana_group_surrounded_by_game_viewer_vehicles.jpg"),
     gradient: "bg-gradient-to-r from-emerald-950/90 via-emerald-900/55 to-transparent",
     textClass: "text-white",
-    emoji: "🦁",
     heading: "Book your safari fleet",
     body: "Land Cruisers built for game parks and reserves, in a range of trims and prices.",
   },
@@ -172,15 +219,25 @@ export const EVENT_THEMES = {
     bgImage: commonsUrl("Toyota_Coaster_Mini_Bus_2015.jpg"),
     gradient: "bg-gradient-to-r from-sky-950/90 via-sky-900/55 to-transparent",
     textClass: "text-white",
-    emoji: "🚌",
     heading: "Move your group together",
     body: "Buses and vans for school trips, staff transport, or large tour groups.",
+  },
+  international_traveller: {
+    // Jomo Kenyatta International Airport's terminal building - a real,
+    // dignified shot of the actual airport travellers booking this event
+    // type will land at (CC BY-SA 2.0, via Wikimedia Commons' stable
+    // Special:FilePath hotlinking, same mechanism as every other photo in
+    // this file). No identifiable bystanders in frame.
+    bgImage: commonsUrl("Jomo_Kenyatta_International_Airport_(JKIA).jpg"),
+    gradient: "bg-gradient-to-r from-indigo-950/90 via-indigo-900/55 to-transparent",
+    textClass: "text-white",
+    heading: "Arriving in Kenya? We'll be at the gate.",
+    body: "Airport pickups, hotel transfers, and multi-day touring with an experienced driver.",
   },
   other: {
     bgImage: commonsUrl("Land_Rover_Range_Rover_P525_Autobiography_L405_black_(4).jpg"),
     gradient: "bg-gradient-to-r from-brand-navy-dark/90 via-brand-navy/60 to-transparent",
     textClass: "text-white",
-    emoji: "🚗",
     heading: "Book vehicles for your event",
     body: "Pick whatever mix of vehicles your event needs.",
   },
@@ -223,6 +280,15 @@ export const AUTH_BG_IMAGES = [
   commonsUrl("Toyota_Coaster_Mini_Bus_2015.jpg"),
 ];
 
+// Single full-bleed background for the Login page specifically (Signup
+// keeps the 2x2 AUTH_BG_IMAGES collage above). A moody, rain-slicked
+// nighttime shot of a car from the rear - CC0/public domain via Wikimedia
+// Commons' stable Special:FilePath hotlinking (same mechanism as every
+// other photo in this file), chosen to match the dark, dramatic "find the
+// best car" mood of GearShift's marketing material rather than the bright
+// daytime collage used elsewhere.
+export const LOGIN_BG_IMAGE = commonsUrl("Porsche_911_on_a_rainy_evening_(Unsplash).jpg", 1920);
+
 // Kenyan phone format shared by every booking form: +254 followed by
 // exactly 9 digits (e.g. +254795038762). Mirrors PHONE_PATTERN in
 // server/routes/bookings.py - the backend re-validates this regardless,
@@ -232,22 +298,6 @@ export const PHONE_REGEX = /^\+254\d{9}$/;
 export function isValidKenyanPhone(value) {
   return PHONE_REGEX.test(value || "");
 }
-
-// Maps a feature's `icon` string (stored in the DB, e.g. "gps") to an emoji
-// so we don't need an icon library just for this. Swap these for a proper
-// icon set later if you want.
-export const FEATURE_ICON_MAP = {
-  gps: "\u{1F4CD}",
-  bluetooth: "\u{1F4F6}",
-  awd: "\u{1F698}",
-  heated_seats: "\u{1F525}",
-  backup_camera: "\u{1F4F7}",
-  apple_carplay: "\u{1F4F1}",
-  sunroof: "☀️",
-  "4wd": "⛰️",
-  usb_charging: "\u{1F50C}",
-  leather_seats: "\u{1FA91}",
-};
 
 // Colour-coded booking status pills. Used by StatusBadge.jsx and reused by
 // MyBookings, OwnerDashboard and the admin booking table so every badge

@@ -93,11 +93,11 @@ Run `pipenv run python seed.py` to create these. Client/owner/admin accounts log
 | Client 1 (renter) | client1@gearshift.com | client123 |
 | Client 2 (renter) | client2@gearshift.com | client123 |
 | Client 3 (renter) | client3@gearshift.com | client123 |
-| Driver - Grace Wanjiru (5.0★) | driver1@gearshift.com | driver123 |
-| Driver - James Mwangi (4.9★) | driver2@gearshift.com | driver123 |
-| Driver - Samuel Kimani (4.8★) | driver3@gearshift.com | driver123 |
-| Driver - Faith Achieng (4.6★) | driver4@gearshift.com | driver123 |
-| Driver - Mercy Nyambura (4.4★) | driver5@gearshift.com | driver123 |
+| Driver - Grace Wanjiru (5.0/5) | driver1@gearshift.com | driver123 |
+| Driver - James Mwangi (4.9/5) | driver2@gearshift.com | driver123 |
+| Driver - Samuel Kimani (4.8/5) | driver3@gearshift.com | driver123 |
+| Driver - Faith Achieng (4.6/5) | driver4@gearshift.com | driver123 |
+| Driver - Mercy Nyambura (4.4/5) | driver5@gearshift.com | driver123 |
 
 3 more drivers exist in the seed data (`driver6`-`driver8@gearshift.com`, same `driver123` password) - see `DRIVER_DATA` in `server/seed.py` for the full list of 8. Swap any of these for your own real accounts once you're ready - just edit `seed.py` (or use the admin/`POST /drivers` and `POST /register` endpoints directly) and re-seed.
 
@@ -166,23 +166,23 @@ Self-assessed against the project brief. Everything below is implemented and ver
 
 | Requirement | Status |
 |---|---|
-| Built with React | ✅ |
-| 8+ routes | ✅ 24 routes (see `client/src/App.jsx`) |
-| 5+ protected routes | ✅ 14 protected routes |
-| Password reset flow | ✅ `/reset-password` |
-| Runs on a single HTML file, no full-page redirects | ✅ `client/index.html`, all navigation via React Router |
-| Professional UI styling | ✅ custom Tailwind theme, custom fonts |
-| 8+ endpoints, 2+ per HTTP method | ✅ 38 endpoints (13 GET, 10 POST, 7 PUT, 4 DELETE, plus 4 driver-portal endpoints) |
-| 5+ auth-protected endpoints | ✅ 29+ protected endpoints |
-| 4+ database models, 4+ columns each | ✅ 7 models (User, Vehicle, Feature, Booking, Driver, DriverApplication, plus the join table) |
-| 2+ one-to-many relationships | ✅ User→Vehicle, User→Booking, Driver→Booking |
-| 1+ many-to-many relationship | ✅ Vehicle↔Feature via `vehicle_features` |
-| JWT authentication | ✅ PyJWT, `@jwt_required` / `@admin_required` / `@driver_required` |
-| Detailed README | ✅ this file + `SETUP_GUIDE.md` |
-| DRY code | ✅ shared `api.js`, `constants.js`, reusable components |
-| License file | ✅ `LICENSE` (MIT) |
-| Regular, clear git commits | ⬜ up to your team - commit as you build, don't push this as one giant commit (see "Team workflow" below) |
-| Live on a public URL (frontend + backend deployed) | ⬜ not deployed yet - see "Deployment" above for the exact steps once you're ready |
+| Built with React | Done |
+| 8+ routes | Done - 24 routes (see `client/src/App.jsx`) |
+| 5+ protected routes | Done - 14 protected routes |
+| Password reset flow | Done - `/reset-password` |
+| Runs on a single HTML file, no full-page redirects | Done - `client/index.html`, all navigation via React Router |
+| Professional UI styling | Done - custom Tailwind theme, custom fonts |
+| 8+ endpoints, 2+ per HTTP method | Done - 38 endpoints (13 GET, 10 POST, 7 PUT, 4 DELETE, plus 4 driver-portal endpoints) |
+| 5+ auth-protected endpoints | Done - 29+ protected endpoints |
+| 4+ database models, 4+ columns each | Done - 7 models (User, Vehicle, Feature, Booking, Driver, DriverApplication, plus the join table) |
+| 2+ one-to-many relationships | Done - User->Vehicle, User->Booking, Driver->Booking |
+| 1+ many-to-many relationship | Done - Vehicle<->Feature via `vehicle_features` |
+| JWT authentication | Done - PyJWT, `@jwt_required` / `@admin_required` / `@driver_required` |
+| Detailed README | Done - this file + `SETUP_GUIDE.md` |
+| DRY code | Done - shared `api.js`, `constants.js`, reusable components |
+| License file | Done - `LICENSE` (MIT) |
+| Regular, clear git commits | Pending - up to your team - commit as you build, don't push this as one giant commit (see "Team workflow" below) |
+| Live on a public URL (frontend + backend deployed) | Pending - not deployed yet - see "Deployment" above for the exact steps once you're ready |
 
 ## Team workflow
 

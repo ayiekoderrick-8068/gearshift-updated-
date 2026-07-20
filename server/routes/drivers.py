@@ -59,7 +59,6 @@ def create_driver():
     return jsonify(driver.to_dict()), 201
 
 
-# --- Driver portal ------------------------------------------------------
 
 @drivers_bp.route("/driver-login", methods=["POST"])
 def driver_login():
@@ -84,9 +83,6 @@ def get_driver_me():
 @drivers_bp.route("/driver/bookings", methods=["GET"])
 @driver_required
 def list_driver_bookings():
-    # Every booking this driver has ever been assigned to (across both
-    # single-vehicle and convoy bookings - they're all just Booking rows
-    # with driver_id set to this driver), most recent first.
     bookings = (
         Booking.query.filter_by(driver_id=g.current_driver.id)
         .order_by(Booking.created_at.desc())

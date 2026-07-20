@@ -58,7 +58,7 @@ export default function Signup() {
           AUTH_BG_IMAGES in constants.js. */}
       <div className="absolute inset-0 grid grid-cols-2 grid-rows-2">
         {AUTH_BG_IMAGES.map((url) => (
-          <div key={url} className="bg-cover bg-center" style={{ backgroundImage: `url(${url})` }} />
+          <div key={url} className="bg-cover bg-center" style={{ backgroundImage: `url("${url}")` }} />
         ))}
       </div>
       <div className="absolute inset-0 bg-brand-navy-dark/85" />

@@ -54,7 +54,7 @@ export default function VehicleDetail() {
           <div>
             <h1 className="text-3xl">{vehicle.make} {vehicle.model} <span className="text-brand-navy/40">({vehicle.year})</span></h1>
             <p className="mt-1 flex items-center gap-1 text-brand-navy/60">
-              <span aria-hidden="true">📍</span> {vehicle.location} &middot; {vehicle.category}
+              {vehicle.location} &middot; {vehicle.category}
             </p>
           </div>
 
@@ -93,7 +93,7 @@ export default function VehicleDetail() {
               title={compareFull ? `You can compare up to ${maxCompare} cars` : undefined}
               className="btn-secondary disabled:cursor-not-allowed disabled:opacity-50"
             >
-              {isComparing ? "✓ Comparing" : "+ Add to compare"}
+              {isComparing ? "Comparing" : "+ Add to compare"}
             </button>
           </div>
         </div>
